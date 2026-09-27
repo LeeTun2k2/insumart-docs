@@ -1,124 +1,141 @@
-# Maintenance Work and Cost
+# Công việc và chi phí bảo trì
 
-**Status:** Proposed  
-**Audience:** CEO, product owner, and engineering team
+**Trạng thái:** Đề xuất
 
-## Purpose
+**Đối tượng đọc:** CEO, chủ sản phẩm và đội kỹ thuật
 
-This document defines planned maintenance for all three deployment options. It also gives the CEO a simple way to estimate the monthly service fee.
+## Mục đích
 
-It covers routine operations. It does not include feature work, releases, migrations, major upgrades, or incident response.
+Tài liệu này nêu rõ việc cần làm để hệ thống hoạt động ổn định. Tài liệu cũng cho biết phí bảo trì của từng phương án.
 
-## Work cycle
+Phí bảo trì không gồm làm tính năng mới, sửa lỗi mã nguồn, phát hành lớn, chuyển dữ liệu lớn hoặc nâng cấp lớn.
+
+## Cách bảo trì
 
 ```mermaid
 flowchart LR
-    Auto[Automated checks] --> Review[Twice-monthly review]
-    Review --> Test[Monthly maintenance]
-    Test --> Report[Cost and risk report]
+    TuDong[Kiểm tra tự động] --> XemXet[Xem hai lần mỗi tháng]
+    XemXet --> BaoTri[Bảo trì hằng tháng]
+    BaoTri --> BaoCao[Báo cáo ngắn]
 ```
 
-Automated checks find urgent issues. Human reviews handle trends and follow-up work. Recovery exercises verify that the recovery steps still work.
+Hệ thống tự động phát hiện vấn đề thường gặp. Người phụ trách xem lại cảnh báo, sửa vấn đề cần thiết và báo cáo cho khách hàng.
 
-## Automated work
+## Việc được kiểm tra tự động
 
-Run these checks continuously:
-
-| Work | Expected result |
+| Công việc | Kết quả cần có |
 |---|---|
-| Check public website, admin site, and API health | Main services respond normally |
-| Review active alerts and recent errors | New failures have an owner |
-| Check CPU, memory, disk, and database connections | Usage stays below the agreed limits |
-| Check the latest PostgreSQL backup | The backup job finished and the copy exists on the expected server |
-| Review failed login and unusual traffic alerts | Security concerns are escalated |
-| Record findings and follow-up work | The maintenance log is current |
+| Kiểm tra website, trang quản trị và API | Các dịch vụ chính trả lời bình thường |
+| Theo dõi cảnh báo và lỗi mới | Vấn đề quan trọng được phát hiện |
+| Theo dõi CPU, bộ nhớ, ổ đĩa và kết nối cơ sở dữ liệu | Máy chủ chưa gần hết tài nguyên |
+| Kiểm tra bản sao lưu PostgreSQL mới nhất | Tác vụ đã chạy và có tệp sao lưu |
+| Theo dõi đăng nhập sai và lưu lượng lạ | Vấn đề bảo mật được báo lại |
 
-Alerts notify the support contact. There is no scheduled daily human review.
+Cảnh báo được gửi tự động. Không có người ngồi theo dõi liên tục.
 
-## Twice-monthly work
+## Việc làm hai lần mỗi tháng
 
-Run these tasks twice each month:
-
-| Work | Expected result |
+| Công việc | Kết quả cần có |
 |---|---|
-| Review uptime, errors, and response time trends | Repeated issues are identified |
-| Review CPU, memory, disk, and database growth | Capacity risks are found early |
-| Review PostgreSQL slow queries and connection use | Database risks have follow-up actions |
-| Check backup status | The daily database copy and latest weekly vendor backup are available |
-| Review OS, container, and security updates | Safe updates are planned or applied |
-| Review Cloudflare, firewall, and admin access rules | Public access remains limited |
-| Check the last stable application images and deployment files | Rollback assets remain available |
-| Send a short maintenance report | The CEO can see health, risk, work, and cost |
+| Xem thời gian hoạt động, lỗi và tốc độ phản hồi | Phát hiện vấn đề lặp lại |
+| Xem CPU, bộ nhớ, ổ đĩa và mức tăng dữ liệu | Phát hiện sớm nguy cơ thiếu tài nguyên |
+| Xem truy vấn PostgreSQL chậm và số kết nối | Có hướng xử lý vấn đề cơ sở dữ liệu |
+| Kiểm tra bản sao lưu | Có bản sao hằng ngày và bản sao Vietnix hằng tuần |
+| Xem bản cập nhật hệ điều hành và bảo mật | Lên lịch hoặc cài bản cập nhật an toàn |
+| Xem Cloudflare, tường lửa và quyền vào trang quản trị | Truy cập công khai vẫn được giới hạn |
+| Kiểm tra bản ứng dụng ổn định gần nhất | Có thể quay lại bản cũ khi cần |
+| Gửi báo cáo ngắn | Khách hàng biết tình trạng, rủi ro và việc đã làm |
 
-Updates that need downtime must use an approved maintenance window.
+Việc cần dừng hệ thống phải được khách hàng đồng ý trước.
 
-## Monthly work
+## Việc làm hằng tháng
 
-- Restore PostgreSQL into a temporary isolated container and verify the data.
-- Apply planned OS updates that need a restart.
-- Review user access and remove access that is no longer needed.
-- Review infrastructure cost and capacity.
-- Review the recovery steps and update incorrect details.
+- Khôi phục thử PostgreSQL trong khu vực riêng và kiểm tra dữ liệu.
+- Cài các bản cập nhật đã lên lịch.
+- Xem lại quyền truy cập và xóa quyền không còn dùng.
+- Kiểm tra chi phí và dung lượng còn lại.
+- Sửa hướng dẫn phục hồi nếu có thông tin sai.
 
-## Quarterly work
+## Việc làm hằng quý
 
-- Run a full recovery exercise for the selected deployment option.
-- Review recovery and data-loss targets with the business owner.
-- Review old dependencies and plan major upgrades as separate work.
-- Review whether the current deployment option still meets business needs.
+- Diễn tập phục hồi theo phương án đang dùng.
+- Xem lại mức mất dữ liệu mà doanh nghiệp có thể chấp nhận.
+- Kiểm tra phần mềm cũ và lên kế hoạch nâng cấp riêng.
+- Đánh giá phương án hiện tại còn phù hợp hay không.
 
-## Planned effort
+## Công sức dự kiến
 
-The estimate assumes that monitoring, alerts, backups, and deployment automation are already in place. It includes the monthly average of quarterly recovery work.
+Các số dưới đây dùng để ước lượng khối lượng việc. Phí bảo trì là phí trọn gói, không lấy số giờ nhân với đơn giá.
 
-| Deployment option | Human reviews | Monthly work | Quarterly work average | Estimated total |
+| Phương án | Xem định kỳ | Việc hằng tháng | Phần việc hằng quý tính trung bình | Tổng dự kiến |
 |---|---:|---:|---:|---:|
-| Option 1: One server | 1.5 hours/month | 2 hours/month | 1.5 hours/month | **5 hours/month** |
-| Option 2: Two servers | 2 hours/month | 2 hours/month | 2 hours/month | **6 hours/month** |
-| Option 3: Separate services | 4 hours/month | 3 hours/month | 3 hours/month | **10 hours/month** |
+| Phương án 1: Một máy chủ | 1,5 giờ/tháng | 2 giờ/tháng | 1,5 giờ/tháng | **5 giờ/tháng** |
+| Phương án 2: Hai máy chủ | 2 giờ/tháng | 2 giờ/tháng | 2 giờ/tháng | **6 giờ/tháng** |
+| Phương án 3: Tách riêng dịch vụ | 4 giờ/tháng | 3 giờ/tháng | 3 giờ/tháng | **10 giờ/tháng** |
 
-The quarterly value is averaged across three months. Actual work is recorded in the month in which it runs.
+Thời gian thật có thể thay đổi. Phí trọn gói còn trả cho việc theo dõi cảnh báo, giữ kiến thức về hệ thống và sẵn sàng hỗ trợ trong khung giờ đã thống nhất.
 
-Option 2 needs more work than Option 1 because the web and database servers are maintained separately. Option 3 needs the most work because it has four servers and more network links.
+## Phí bảo trì
 
-## Cost estimate
+| Phương án | Trước VAT mỗi tháng | Sau VAT mỗi tháng | Sau VAT mỗi năm |
+|---|---:|---:|---:|
+| Phương án 1: Một máy chủ | 2 triệu VND | 2,2 triệu VND | **26,4 triệu VND** |
+| Phương án 2: Hai máy chủ | 2,5 triệu VND | 2,75 triệu VND | **33 triệu VND** |
+| Phương án 3: Tách riêng dịch vụ | 4 triệu VND | 4,4 triệu VND | **52,8 triệu VND** |
 
-Use this formula:
+Phương án 2 là lựa chọn đề xuất. Phương án này có hai máy chủ cần kiểm tra riêng nhưng vẫn dễ quản lý.
 
-> Monthly maintenance price = planned hours x engineering rate + on-call fee + paid tools + VAT
+## Công việc ngoài gói
 
-The estimate uses the agreed infrastructure engineering rate of VND 100,000 per hour.
+Mọi công việc ngoài gói có đơn giá chung là **300.000 VND/giờ**.
 
-| Deployment option | Hours/month | Before VAT | VAT at 10% | Total/month |
-|---|---:|---:|---:|---:|
-| Option 1: One server | 5 | VND 500,000 | VND 50,000 | **VND 550,000** |
-| Option 2: Two servers | 6 | VND 600,000 | VND 60,000 | **VND 660,000** |
-| Option 3: Separate services | 10 | VND 1 million | VND 100,000 | **VND 1.1 million** |
+- Áp dụng cùng một giá vào ban ngày, buổi tối, cuối tuần và ngày lễ.
+- Tính theo mỗi 30 phút.
+- Chỉ làm sau khi khách hàng đồng ý.
+- Không cam kết người phụ trách luôn sẵn sàng ngoài giờ.
+- Phí của nhà cung cấp khác được tính riêng.
 
-Incident work is billed separately unless the support contract includes it. A 24/7 response promise also needs a separate on-call fee. The on-call fee pays for availability. The contract must state whether it also includes incident hours.
+Các việc thường nằm ngoài gói:
 
-## Cost changes
+- Sửa lỗi mã nguồn hoặc làm tính năng.
+- Chuyển dữ liệu lớn.
+- Thay đổi kiến trúc.
+- Nâng cấp phiên bản lớn.
+- Xử lý nhiều sự cố bất thường trong cùng tháng.
 
-The estimate must be reviewed when any of these items change:
+## Thời gian phản hồi
 
-- More servers, databases, or environments are added.
-- A paid monitoring or security tool is required.
-- The business asks for 24/7 support or a shorter response time.
-- Backup frequency or retention increases.
-- Compliance reporting or security review is added.
-- Traffic, data size, or incident frequency grows.
+- Gói thường: phản hồi trong vòng 8 giờ làm việc đã thống nhất.
+- Không có trực 24/7.
+- Không cam kết phản hồi trong 15 phút.
+- Trường hợp khẩn cấp ngoài giờ chỉ được xử lý khi người phụ trách có thể nhận việc.
 
-## Assumptions and open questions
+Nếu doanh nghiệp cần trực 24/7, nên thuê thêm đơn vị chuyên trực hệ thống.
 
-- The engineering rate is VND 100,000 per hour.
-- There is no daily human review. Alerts remain active outside business hours, but response starts within the agreed support hours.
-- The CEO must select the on-call model.
-- Monitoring, backup, and deployment automation setup is a separate one-time cost.
-- The recovery targets in the deployment documents are still proposed and need business approval.
+## Khi nào cần đổi giá
 
-## References
+Hai bên cần xem lại phí khi:
 
-- [Deployment options](../deployments/README.md)
-- [Option 1 architecture](../deployments/option-1-single-server/architecture.md)
-- [Option 2 architecture](../deployments/option-2-two-servers/architecture.md)
-- [Option 3 architecture](../deployments/option-3-separate-services/architecture.md)
+- Thêm máy chủ, cơ sở dữ liệu hoặc môi trường.
+- Cần công cụ theo dõi hoặc bảo mật có phí.
+- Yêu cầu phản hồi nhanh hơn.
+- Tăng số lần sao lưu hoặc thời gian giữ bản sao.
+- Lưu lượng, dữ liệu hoặc số sự cố tăng nhiều.
+- Phạm vi công việc thực tế thường xuyên vượt gói.
+
+Mức giá này là giá ưu đãi cho năm đầu. Hai bên nên xem lại khi gia hạn.
+
+## Điều cần xác nhận
+
+- Phương án 2 có phí bảo trì 2,5 triệu VND/tháng trước VAT.
+- Công việc ngoài gói có giá 300.000 VND/giờ.
+- Khung giờ hỗ trợ cần được ghi rõ trong hợp đồng.
+- Khách hàng cần chỉ định người có quyền duyệt việc phát sinh.
+- Việc cài hệ thống theo dõi, sao lưu và phát hành ban đầu nằm trong phí cài đặt 8 triệu VND.
+
+## Tài liệu tham khảo
+
+- [Các phương án triển khai](../deployments/README.md)
+- [Kiến trúc Phương án 1](../deployments/option-1-single-server/architecture.md)
+- [Kiến trúc Phương án 2](../deployments/option-2-two-servers/architecture.md)
+- [Kiến trúc Phương án 3](../deployments/option-3-separate-services/architecture.md)

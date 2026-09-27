@@ -1,76 +1,80 @@
-# Option 2: Separate Web and Database Servers
+# Phương án 2: Tách máy chủ web và cơ sở dữ liệu
 
-**Status:** Recommended  
-**Best for:** Balanced cost, safety, and simple operation
+**Trạng thái:** Khuyến nghị
 
-## TL;DR
+**Phù hợp khi:** Cần cân bằng chi phí, an toàn và cách quản lý đơn giản
 
-- **Goal:** Isolate PostgreSQL from public web services.
-- **Benefit:** A web fault does not directly consume database resources.
-- **Risk:** Each server is still a single failure point and needs a recovery plan.
+## Tóm tắt
 
-## Architecture
+- **Cách làm:** Website và PostgreSQL chạy trên hai VPS riêng.
+- **Lợi ích:** Lỗi website khó làm hết tài nguyên của cơ sở dữ liệu.
+- **Rủi ro:** Mỗi VPS vẫn có thể bị lỗi và cần cách phục hồi rõ ràng.
+- **Chi phí năm đầu:** **47,6 triệu VND**.
+
+## Sơ đồ
 
 ```mermaid
 flowchart LR
-    User[Customer or Admin] --> CF[Cloudflare]
-    CF --> WebVPS[Web VPS]
-    WebVPS --> Apps[Client, Admin, Backend]
-    Apps --> DBVPS[(PostgreSQL VPS)]
-    WebVPS --> Files[(Local files)]
-    Apps -. optional .-> Redis[(Redis)]
-    DBVPS -. daily copy .-> WebVPS
-    WebVPS -. weekly .-> Backup[Vendor Backup]
-    DBVPS -. weekly .-> Backup
+    NguoiDung[Khách hàng hoặc quản trị viên] --> CF[Cloudflare]
+    CF --> WebVPS[VPS Web]
+    WebVPS --> UngDung[Website và ứng dụng]
+    UngDung --> DBVPS[(VPS PostgreSQL)]
+    WebVPS --> Tep[(Tệp tải lên)]
+    UngDung -. nếu cần .-> Redis[(Redis)]
+    DBVPS -. sao chép hằng ngày .-> WebVPS
+    WebVPS -. hằng tuần .-> SaoLuu[Bản sao lưu Vietnix]
+    DBVPS -. hằng tuần .-> SaoLuu
 ```
 
-Cloudflare is the only public entry point. PostgreSQL accepts traffic only from the Web VPS. Redis, if added later, stays on the Web VPS unless measurements show that it needs separate resources.
+Cloudflare là cửa vào công khai duy nhất. PostgreSQL chỉ nhận kết nối từ VPS Web. Nếu sau này cần Redis, Redis vẫn đặt trên VPS Web cho đến khi có số liệu cho thấy cần máy riêng.
 
-## Suggested size
+## Cấu hình đề xuất
 
-| Server | Vietnix plan | Workload |
+| Máy chủ | Gói Vietnix | Công việc |
 |---|---|---|
-| Web VPS | Cheap 2: 2 CPU, 4 GB RAM, 40 GB SSD | Client, admin, backend, local files, reverse proxy |
-| Database VPS | Cheap 2: 2 CPU, 4 GB RAM, 40 GB SSD | PostgreSQL only |
+| VPS Web | Cheap 2: 2 CPU, 4 GB RAM, 40 GB SSD | Website, trang quản trị, ứng dụng chính và tệp tải lên |
+| VPS cơ sở dữ liệu | Cheap 2: 2 CPU, 4 GB RAM, 40 GB SSD | Chỉ chạy PostgreSQL |
 
-This size assumes a Go backend and static client and admin sites. Build frontend assets in CI. Review CPU, memory, disk use, and slow queries after launch and after marketing campaigns.
+Ứng dụng chính được viết bằng Go. Trang khách hàng và trang quản trị được tạo sẵn trước khi đưa lên VPS. Sau khi mở cho khách hàng hoặc chạy chương trình quảng cáo, cần xem lại CPU, bộ nhớ, ổ đĩa và các câu lệnh cơ sở dữ liệu chạy chậm.
 
-## Cost estimate
+## Chi phí
 
-| Item | Monthly cost |
+| Hạng mục | Chi phí năm đầu |
 |---|---:|
-| Web VPS planning price | VND 250,000 |
-| Database VPS planning price | VND 250,000 |
-| Cloudflare Free | VND 0 |
-| **Estimated total** | **VND 500,000** |
+| Hai VPS, đã gồm VAT | 6,6 triệu VND |
+| Cài đặt ban đầu | 8 triệu VND |
+| Bảo trì một năm, đã gồm VAT | 33 triệu VND |
+| **Tổng** | **47,6 triệu VND** |
 
-The planning price excludes VAT and promotions.
+Phí bảo trì là 2,5 triệu VND/tháng trước VAT. Công việc ngoài gói có giá 300.000 VND/giờ cho mọi khung giờ.
 
-## Failure impact and recovery
+## Khi có lỗi
 
-| Failure | Impact | Target recovery |
+| Lỗi | Tác động | Mục tiêu sau khi bắt đầu xử lý |
 |---|---|---|
-| Application process | One function may stop | Under 5 minutes |
-| Web VPS | Public site and admin stop | Within 60 minutes |
-| Database VPS | Data functions stop | Within 4 hours |
-| Bad release | New version is unstable | Roll back within 15 minutes |
+| Một phần ứng dụng bị lỗi | Một chức năng có thể dừng | Dưới 5 phút nếu chỉ cần chạy lại |
+| VPS Web bị lỗi | Website và trang quản trị dừng | Trong vòng 60 phút |
+| VPS cơ sở dữ liệu bị lỗi | Các chức năng dùng dữ liệu dừng | Trong vòng 4 giờ |
+| Bản phát hành mới bị lỗi | Phiên bản mới không ổn định | Quay lại bản cũ trong 15 phút |
 
-Create a daily database backup on the Web VPS. Use the included weekly vendor backup and run a monthly restore test. Keep deployment configuration and application images outside both VPS servers.
+Sao lưu cơ sở dữ liệu hằng ngày sang VPS Web. Dùng thêm bản sao lưu hằng tuần của Vietnix và thử khôi phục mỗi tháng. Giữ hướng dẫn cài đặt và bản ứng dụng ổn định ở nơi khác.
 
-## Security
+Gói bảo trì chỉ cam kết phản hồi trong 8 giờ làm việc đã thống nhất. Các mục tiêu trong bảng được tính từ khi bắt đầu xử lý.
 
-- Accept public traffic on ports 80 and 443 through Cloudflare only.
-- Limit SSH to trusted IPs or VPN access.
-- Allow PostgreSQL only from the Web VPS.
-- Use encrypted database connections if private networking is not available.
-- Put the admin site behind Cloudflare Access or an IP allow-list.
+## Bảo mật
 
-## Growth path
+- Chỉ nhận truy cập công khai trên cổng 80 và 443 qua Cloudflare.
+- Chỉ cho phép IP tin cậy hoặc VPN dùng SSH.
+- Chỉ cho phép VPS Web kết nối PostgreSQL.
+- Mã hóa kết nối cơ sở dữ liệu nếu Vietnix không có mạng riêng.
+- Bảo vệ trang quản trị bằng Cloudflare Access hoặc danh sách IP được phép.
 
-Upgrade only when CPU stays above 70%, memory stays above 80%, swap is used often, or a load test fails. Use a larger Web VPS if the frontend needs server-side rendering or the backend runs heavy jobs.
+## Khi cần mở rộng
 
-Add a second Web VPS and a load balancer when one hour of web downtime is no longer acceptable. Add PostgreSQL replication only when the business also needs faster database recovery.
+Chỉ nâng cấp khi CPU thường xuyên trên 70%, bộ nhớ trên 80%, máy chủ thường xuyên phải dùng ổ đĩa làm bộ nhớ tạm hoặc kiểm thử tải không đạt.
 
-## Decision
+Thêm VPS Web thứ hai và bộ chia lưu lượng khi doanh nghiệp không còn chấp nhận một giờ dừng website. Chỉ thêm bản sao PostgreSQL khi cần phục hồi cơ sở dữ liệu nhanh hơn.
 
-**Use this option for launch.** It gives useful isolation for VND 250,000 more per month than Option 1 and avoids the operating cost of Option 3.
+## Quyết định
+
+**Dùng phương án này khi mở cho khách hàng.** Chi phí năm đầu cao hơn Phương án 1 là 10,9 triệu VND nhưng website và cơ sở dữ liệu được tách riêng. Phương án cũng dễ quản lý hơn việc chia thành bốn máy chủ.

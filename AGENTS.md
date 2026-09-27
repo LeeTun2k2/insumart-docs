@@ -1,106 +1,106 @@
 # AGENTS.md
 
-## Purpose
+## Mục đích
 
-This repository is the shared source of truth for documents used to work with the Insumart team.
+Kho lưu trữ này là nguồn thông tin chuẩn dùng chung cho các tài liệu phục vụ công việc với đội ngũ Insumart.
 
-It covers:
+Phạm vi gồm:
 
-- Product and technical documents.
-- Service and data contracts.
-- Architecture and technical decisions.
-- Integration guides and operational runbooks.
+- Tài liệu sản phẩm và kỹ thuật.
+- Hợp đồng dịch vụ và dữ liệu.
+- Kiến trúc và quyết định kỹ thuật.
+- Hướng dẫn tích hợp và sổ tay vận hành.
 
-## Core Rules
+## Quy tắc cốt lõi
 
-- Write in clear, concise English.
-- Use short sentences and simple words.
-- State facts. Do not guess missing details.
-- Verify technical claims against the relevant code, contract, or source document.
-- Record open questions and assumptions explicitly.
-- Keep changes small and focused on the requested document.
-- Do not change an agreed contract or decision without calling out the impact.
-- Preserve existing content that is outside the task scope.
-- Never include secrets, credentials, personal data, or internal access tokens.
+- Viết tiếng Việt rõ ràng, ngắn gọn.
+- Dùng câu ngắn và từ đơn giản.
+- Chỉ nêu sự thật. Không đoán thông tin còn thiếu.
+- Xác minh nội dung kỹ thuật với mã nguồn, hợp đồng hoặc tài liệu nguồn có liên quan.
+- Ghi rõ câu hỏi mở và giả định.
+- Giữ thay đổi nhỏ và tập trung vào tài liệu được yêu cầu.
+- Không thay đổi hợp đồng hoặc quyết định đã thống nhất mà không nêu rõ tác động.
+- Giữ nguyên nội dung nằm ngoài phạm vi công việc.
+- Không đưa mật khẩu, mã truy cập, dữ liệu cá nhân hoặc thông tin bí mật vào tài liệu.
 
-## Document Structure
+## Cấu trúc tài liệu
 
-Each document should include, when relevant:
+Mỗi tài liệu nên có các phần sau khi phù hợp:
 
-1. Title and status.
-2. Context and problem.
-3. Goals and non-goals.
-4. Proposed solution or contract.
-5. Affected systems and owners.
-6. Risks and trade-offs.
-7. Rollout, rollback, or migration plan.
-8. Open questions.
-9. References.
+1. Tiêu đề và trạng thái.
+2. Bối cảnh và vấn đề.
+3. Mục tiêu và nội dung không thuộc phạm vi.
+4. Giải pháp hoặc hợp đồng được đề xuất.
+5. Hệ thống và bên chịu trách nhiệm bị ảnh hưởng.
+6. Rủi ro và đánh đổi.
+7. Kế hoạch phát hành, quay lại bản cũ hoặc chuyển dữ liệu.
+8. Câu hỏi mở.
+9. Tài liệu tham khảo.
 
-Do not add empty sections only to satisfy this list.
+Không thêm phần trống chỉ để đáp ứng danh sách này.
 
-## Contracts
+## Hợp đồng
 
-For API, event, and data contracts:
+Với hợp đồng API, sự kiện và dữ liệu:
 
-- Define the producer and consumer.
-- Define field names, types, required fields, and validation rules.
-- Include request, response, or event examples.
-- Define errors, retries, timeouts, and idempotency where relevant.
-- State compatibility and versioning rules.
-- Describe security and data sensitivity.
-- Call out breaking changes clearly.
-- Include a migration plan for breaking changes.
+- Xác định bên tạo và bên sử dụng.
+- Xác định tên trường, kiểu dữ liệu, trường bắt buộc và quy tắc kiểm tra.
+- Thêm ví dụ về yêu cầu, phản hồi hoặc sự kiện.
+- Xác định lỗi, cách thử lại, thời gian chờ và cách tránh tạo dữ liệu trùng khi gửi lại yêu cầu.
+- Nêu cách giữ tương thích và quản lý phiên bản.
+- Mô tả bảo mật và mức độ nhạy cảm của dữ liệu.
+- Nêu rõ thay đổi phá vỡ tính tương thích.
+- Thêm kế hoạch chuyển đổi cho thay đổi không tương thích với bản cũ.
 
-## Technical Decisions
+## Quyết định kỹ thuật
 
-Use an Architecture Decision Record for important decisions.
+Dùng Bản ghi quyết định kiến trúc (ADR) cho các quyết định quan trọng.
 
-Each decision should contain:
+Mỗi quyết định cần có:
 
-- Status: proposed, accepted, superseded, or rejected.
-- Context: why a decision is needed.
-- Decision: what was selected.
-- Options: practical alternatives considered.
-- Consequences: benefits, costs, risks, and follow-up work.
+- Trạng thái: đề xuất, chấp nhận, thay thế hoặc từ chối.
+- Bối cảnh: lý do cần đưa ra quyết định.
+- Quyết định: phương án được chọn.
+- Các phương án: những lựa chọn thực tế đã cân nhắc.
+- Hệ quả: lợi ích, chi phí, rủi ro và công việc tiếp theo.
 
-Do not rewrite accepted history. Add a new decision that supersedes the old one.
+Không viết lại lịch sử đã được chấp nhận. Hãy thêm quyết định mới để thay thế quyết định cũ.
 
-## Diagrams
+## Sơ đồ
 
-Use Mermaid for flows, system context, ownership, and dependency views.
+Dùng Mermaid cho luồng, bối cảnh hệ thống, quyền sở hữu và quan hệ phụ thuộc.
 
-- Keep each diagram understandable within 10 seconds.
-- Show only details needed for the document.
-- Split large diagrams into an overview and smaller detail diagrams.
-- Add a short text summary so the document still works without rendering.
+- Mỗi sơ đồ phải hiểu được trong vòng 10 giây.
+- Chỉ hiển thị chi tiết cần thiết cho tài liệu.
+- Chia sơ đồ lớn thành một sơ đồ tổng quan và các sơ đồ chi tiết nhỏ hơn.
+- Thêm phần tóm tắt ngắn để tài liệu vẫn dùng được khi không hiển thị sơ đồ.
 
 ```mermaid
 flowchart LR
-    Author --> Review
-    Review --> Decision
-    Decision --> Publish
+    TacGia[Tác giả] --> XemXet[Xem xét]
+    XemXet --> QuyetDinh[Quyết định]
+    QuyetDinh --> CongBo[Công bố]
 ```
 
-## Review Checklist
+## Danh sách kiểm tra
 
-Before completing a change, confirm:
+Trước khi hoàn tất thay đổi, xác nhận:
 
-- The document has a clear purpose and audience.
-- Terms and names are consistent.
-- Claims are backed by known sources.
-- Assumptions and open questions are visible.
-- Contract compatibility and migration impact are covered.
-- Diagrams match the written content.
-- Links and examples are valid.
-- No sensitive data is present.
+- Tài liệu có mục đích và đối tượng đọc rõ ràng.
+- Thuật ngữ và tên gọi nhất quán.
+- Các nhận định dựa trên nguồn đã biết.
+- Giả định và câu hỏi mở được nêu rõ.
+- Tính tương thích của hợp đồng và tác động di chuyển đã được xem xét.
+- Sơ đồ khớp với nội dung viết.
+- Liên kết và ví dụ hợp lệ.
+- Không có dữ liệu nhạy cảm.
 
-## Agent Workflow
+## Quy trình làm việc của người hỗ trợ
 
-1. Read the full target document and nearby related documents.
-2. Inspect referenced contracts or source code before making technical claims.
-3. Make the smallest change that satisfies the request.
-4. Check terminology, links, examples, and Mermaid syntax.
-5. Summarize changed files, key decisions, and unresolved questions.
+1. Đọc toàn bộ tài liệu cần sửa và các tài liệu liên quan gần đó.
+2. Kiểm tra hợp đồng hoặc mã nguồn được tham chiếu trước khi đưa ra nhận định kỹ thuật.
+3. Thực hiện thay đổi nhỏ nhất đáp ứng yêu cầu.
+4. Kiểm tra thuật ngữ, liên kết, ví dụ và cú pháp Mermaid.
+5. Tóm tắt các tệp đã thay đổi, quyết định chính và câu hỏi chưa giải quyết.
 
-If required information is missing and would materially change the result, ask for it instead of inventing it.
+Nếu thiếu thông tin có thể làm thay đổi đáng kể kết quả, hãy hỏi thay vì tự suy đoán.

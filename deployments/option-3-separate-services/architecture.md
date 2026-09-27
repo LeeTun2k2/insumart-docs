@@ -1,72 +1,78 @@
-# Option 3: Separate Services
+# Phương án 3: Tách thành bốn máy chủ
 
-**Status:** Deferred  
-**Best for:** Larger systems with independent teams and release cycles
+**Trạng thái:** Chưa cần dùng
 
-## TL;DR
+**Phù hợp khi:** Hệ thống lớn hơn và có nhiều nhóm làm việc độc lập
 
-- **Goal:** Put client, admin, backend, and PostgreSQL on separate servers.
-- **Benefit:** A failure can affect a smaller part of the system.
-- **Risk:** Cost and operating work increase, but each service is still a single failure point.
+## Tóm tắt
 
-## Architecture
+- **Cách làm:** Trang khách hàng, trang quản trị, ứng dụng chính và PostgreSQL chạy trên bốn VPS riêng.
+- **Lợi ích:** Một lỗi có thể chỉ ảnh hưởng đến một phần nhỏ hơn.
+- **Rủi ro:** Tốn nhiều tiền và công quản lý hơn, nhưng mỗi VPS vẫn có thể bị lỗi.
+- **Chi phí năm đầu:** **78 triệu VND**.
+
+## Sơ đồ
 
 ```mermaid
 flowchart LR
-    User[Customer or Admin] --> CF[Cloudflare]
-    CF --> Client[Client VPS]
-    CF --> Admin[Admin VPS]
-    CF --> API[Backend VPS]
-    Client --> API
-    Admin --> API
-    API --> DB[(PostgreSQL VPS)]
-    API --> Files[(Local files)]
-    DB -. weekly .-> Backup[Vendor Backup]
+    NguoiDung[Khách hàng hoặc quản trị viên] --> CF[Cloudflare]
+    CF --> KhachHang[VPS trang khách hàng]
+    CF --> QuanTri[VPS trang quản trị]
+    CF --> UngDung[VPS ứng dụng chính]
+    KhachHang --> UngDung
+    QuanTri --> UngDung
+    UngDung --> DB[(VPS PostgreSQL)]
+    UngDung --> Tep[(Tệp tải lên)]
+    DB -. hằng tuần .-> SaoLuu[Bản sao lưu Vietnix]
 ```
 
-Redis can use another VPS when it becomes required. This layout separates infrastructure. A true microservice design also needs clear business boundaries, separate releases, and service contracts. Those details cannot be defined until the backend design is known.
+Redis có thể dùng thêm một VPS khi thật sự cần. Việc dùng nhiều VPS chỉ tách máy chủ. Để chia ứng dụng thành nhiều dịch vụ nhỏ, còn cần xác định rõ phần việc, cách phát hành và cách các dịch vụ trao đổi dữ liệu. Chưa thể làm việc đó khi chưa có thiết kế chi tiết của ứng dụng.
 
-## Suggested minimum size
+## Cấu hình tối thiểu
 
-| Server | Vietnix plan | Monthly cost |
+| Máy chủ | Gói Vietnix | Giá trước VAT mỗi tháng |
 |---|---|---:|
-| Client VPS | Cheap 2: 2 CPU, 4 GB RAM | VND 250,000 |
-| Admin VPS | Cheap 2: 2 CPU, 4 GB RAM | VND 250,000 |
-| Backend VPS | Cheap 2: 2 CPU, 4 GB RAM | VND 250,000 |
-| Database VPS | Cheap 2: 2 CPU, 4 GB RAM | VND 250,000 |
+| VPS trang khách hàng | Cheap 2: 2 CPU, 4 GB RAM | 250.000 VND |
+| VPS trang quản trị | Cheap 2: 2 CPU, 4 GB RAM | 250.000 VND |
+| VPS ứng dụng chính | Cheap 2: 2 CPU, 4 GB RAM | 250.000 VND |
+| VPS cơ sở dữ liệu | Cheap 2: 2 CPU, 4 GB RAM | 250.000 VND |
 
-## Cost estimate
+## Chi phí
 
-| Item | Monthly cost |
+| Hạng mục | Chi phí năm đầu |
 |---|---:|
-| Four Vietnix VPS servers | VND 1 million |
-| Cloudflare Free | VND 0 |
-| **Estimated total without Redis** | **VND 1 million** |
-| Optional Redis VPS | Add VND 250,000 |
+| Bốn VPS, đã gồm VAT | 13,2 triệu VND |
+| Cài đặt ban đầu | 12 triệu VND |
+| Bảo trì một năm, đã gồm VAT | 52,8 triệu VND |
+| **Tổng** | **78 triệu VND** |
 
-The planning price excludes VAT and promotions. A real high-availability setup costs more because critical services need duplicate instances and a load balancer.
+Phí bảo trì là 4 triệu VND/tháng trước VAT. Công việc ngoài gói có giá 300.000 VND/giờ cho mọi khung giờ.
 
-## Failure impact
+Nếu dùng thêm VPS Redis, chi phí VPS tăng khoảng 3,3 triệu VND mỗi năm sau VAT. Hệ thống có máy dự phòng thật sự sẽ tốn nhiều hơn vì cần thêm VPS và bộ chia lưu lượng.
 
-| Failure | Business impact |
+## Khi có lỗi
+
+| Lỗi | Tác động |
 |---|---|
-| Client VPS | Public website stops; admin may remain available |
-| Admin VPS | Admin stops; public website may remain available |
-| Backend VPS | Most website and admin actions stop |
-| Database VPS | All data functions stop |
+| VPS trang khách hàng | Website công khai dừng; trang quản trị có thể vẫn chạy |
+| VPS trang quản trị | Trang quản trị dừng; website công khai có thể vẫn chạy |
+| VPS ứng dụng chính | Hầu hết thao tác trên website và trang quản trị dừng |
+| VPS cơ sở dữ liệu | Mọi chức năng dùng dữ liệu dừng |
 
-The backend and database remain central failure points. Splitting the two frontends does not keep the business running when either central component fails.
+Ứng dụng chính và cơ sở dữ liệu vẫn là hai điểm lỗi quan trọng. Tách hai trang web không giúp doanh nghiệp tiếp tục hoạt động khi một trong hai phần này dừng.
 
-## Operating impact
+## Công quản lý
 
-- More servers need patching, monitoring, firewall rules, and deployment work.
-- More network links create more failure cases.
-- Troubleshooting takes longer.
-- Separate release pipelines are needed.
-- Capacity is underused at the current traffic level.
+- Có bốn máy chủ cần cập nhật, theo dõi và cài tường lửa.
+- Có nhiều kết nối mạng hơn nên có thêm loại lỗi.
+- Tìm nguyên nhân lỗi mất nhiều thời gian hơn.
+- Cần quy trình phát hành riêng cho từng phần.
+- Nhiều tài nguyên chưa được dùng hết ở mức truy cập hiện tại.
 
-Increase a service only when its own monitoring shows sustained CPU above 70%, memory above 80%, frequent swap use, or failed load-test targets.
+Chỉ nâng cấp một VPS khi CPU thường xuyên trên 70%, bộ nhớ trên 80%, máy chủ thường xuyên phải dùng ổ đĩa làm bộ nhớ tạm hoặc kiểm thử tải không đạt.
 
-## Decision
+## Quyết định
 
-Do not use this option for launch. Reconsider it when traffic, team size, or release independence creates a measured need. For higher availability, first add a second Web VPS to Option 2 instead of splitting every component.
+Không dùng phương án này ở giai đoạn đầu. Chỉ xem lại khi lượng truy cập, số người trong đội hoặc nhu cầu phát hành riêng đã tăng rõ ràng.
+
+Nếu cần website ổn định hơn, trước tiên nên thêm VPS Web thứ hai vào Phương án 2 thay vì tách mọi phần thành máy chủ riêng.

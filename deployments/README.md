@@ -1,94 +1,112 @@
-# Insumart Website Deployment Options
+# Các phương án chạy website Insumart
 
-**Status:** Proposed  
-**Audience:** CEO, product owner, and engineering team  
-**Price check:** 26 September 2026
+**Trạng thái:** Đề xuất
 
-## TL;DR
+**Đối tượng đọc:** CEO, chủ sản phẩm và đội kỹ thuật
 
-- **Goal:** Control cost, reduce downtime, and recover quickly after a failure.
-- **Recommendation:** Use Option 2. Keep web services and PostgreSQL on separate VPS servers.
-- **Expected cost:** About **VND 500,000/month**, before VAT.
+**Ngày kiểm tra giá:** 26 tháng 9 năm 2026
 
-## Options at a glance
+## Tóm tắt
+
+- **Mục tiêu:** Giữ chi phí hợp lý, giảm thời gian website bị dừng và có cách phục hồi khi máy chủ gặp lỗi.
+- **Khuyến nghị:** Dùng Phương án 2. Website và PostgreSQL chạy trên hai VPS riêng.
+- **Chi phí năm đầu:** **47,6 triệu VND**.
+- **Từ năm thứ hai:** Khoảng **39,6 triệu VND/năm** nếu giá VPS và phí bảo trì không đổi.
+
+## So sánh nhanh
 
 ```mermaid
 flowchart LR
-    Need[600 sessions per day] --> O1[Option 1: One server]
-    Need --> O2[Option 2: Two servers]
-    Need --> O3[Option 3: Separate services]
-    O2 --> Pick[Recommended]
+    NhuCau[600 lượt truy cập mỗi ngày] --> PA1[Phương án 1: Một máy chủ]
+    NhuCau --> PA2[Phương án 2: Hai máy chủ]
+    NhuCau --> PA3[Phương án 3: Bốn máy chủ]
+    PA2 --> Chon[Khuyến nghị]
 ```
 
-| Option | Estimated total per month | Downtime risk | Operating work | Decision |
+| Phương án | Chi phí năm đầu | Rủi ro dừng toàn bộ | Công quản lý | Quyết định |
 |---|---:|---|---|---|
-| [One server](./option-1-single-server/architecture.md) | VND 250,000 | High | Low | Use only when cost is the main concern |
-| [Two servers](./option-2-two-servers/architecture.md) | VND 500,000 | Medium | Medium | **Recommended** |
-| [Separate services](./option-3-separate-services/architecture.md) | VND 1 million | Medium | High | Defer |
+| [Một máy chủ](./option-1-single-server/architecture.md) | 36,7 triệu VND | Cao | Thấp | Chỉ dùng khi cần tiết kiệm nhất |
+| [Hai máy chủ](./option-2-two-servers/architecture.md) | 47,6 triệu VND | Trung bình | Trung bình | **Khuyến nghị** |
+| [Bốn máy chủ](./option-3-separate-services/architecture.md) | 78 triệu VND | Trung bình | Cao | Chưa cần dùng |
 
-The estimates use a fixed planning price of VND 250,000 per VPS per month and Cloudflare Free. They do not use promotions. They exclude VAT, paid monitoring, migration, and engineering support. The existing domain adds no cost.
+Các số trên gồm VPS, cài đặt ban đầu, bảo trì một năm và VAT theo kế hoạch. Không gồm việc phát sinh, trực 24/7, Cloudflare Pro hoặc nơi sao lưu bên ngoài Vietnix.
 
-## Why Option 2 is recommended
+## Vì sao chọn Phương án 2
 
-- The traffic is small. Microservices add cost and work without a clear business return.
-- PostgreSQL is separated from web processes. A web fault cannot directly consume all database resources.
-- The price difference from Option 1 is VND 250,000 per month.
-- Recovery is simpler than Option 3.
-- The system can add a second Web VPS later without a full redesign.
+- Lưu lượng hiện tại còn thấp. Chưa cần chia hệ thống thành quá nhiều phần.
+- PostgreSQL chạy riêng. Lỗi website khó dùng hết tài nguyên của cơ sở dữ liệu.
+- Chi phí năm đầu chỉ cao hơn Phương án 1 là 10,9 triệu VND.
+- Khi có lỗi, việc tìm nguyên nhân và phục hồi vẫn đơn giản.
+- Có thể thêm VPS Web thứ hai sau này mà không phải làm lại toàn bộ.
 
-Microservices do not create high availability by themselves. A critical service still stops when its only server fails. High availability needs duplicate instances and a load balancer.
+Tách nhiều dịch vụ không tự làm hệ thống ổn định hơn. Nếu mỗi dịch vụ vẫn chỉ có một máy chủ, máy chủ đó hỏng thì dịch vụ vẫn dừng.
 
-## Controls required for every option
+## Chi phí Phương án 2
 
-- Put **Cloudflare Free** in front of all public traffic.
-- Enable the DDoS, WAF, bot, and rate-limit controls available on the Free plan.
-- Hide the Vietnix origin IP where possible. Allow Cloudflare IP ranges on web ports.
-- Protect the admin site with Cloudflare Access or an IP allow-list and multi-factor authentication.
-- Never expose PostgreSQL or Redis to the public Internet.
-- Back up PostgreSQL daily. For multi-server options, copy the backup to another VPS.
-- Use the included weekly vendor backup. Test restore every month.
-- Monitor website health, CPU, memory, disk, database connections, and backup status.
+| Hạng mục | Chi phí năm đầu |
+|---|---:|
+| Hai VPS, đã gồm VAT | 6,6 triệu VND |
+| Cài đặt ban đầu | 8 triệu VND |
+| Bảo trì một năm, đã gồm VAT | 33 triệu VND |
+| **Tổng** | **47,6 triệu VND** |
 
-Cloudflare Free is enough for launch. Cloudflare Pro is optional and has a planning budget of about VND 594,000 per month, including the exchange-rate and tax buffer defined in the [production cost estimate](../costs/README.md).
+Phí bảo trì là 2,5 triệu VND/tháng trước VAT. Công việc ngoài gói có giá 300.000 VND/giờ cho mọi khung giờ.
 
-## When to increase resources
+## Việc bắt buộc cho mọi phương án
 
-Every VPS starts with at least **2 CPU and 4 GB RAM**. This gives the operating system and services more safe capacity during traffic spikes, deployments, backups, and maintenance.
+- Đặt **Cloudflare Free** trước website.
+- Bật chống DDoS, tường lửa web và giới hạn số lần gọi khi gói Free hỗ trợ.
+- Ẩn IP gốc của Vietnix khi có thể.
+- Chỉ cho phép Cloudflare truy cập các cổng web.
+- Bảo vệ trang quản trị bằng Cloudflare Access hoặc danh sách IP được phép.
+- Bật xác thực hai bước cho tài khoản quản trị.
+- Không mở PostgreSQL hoặc Redis ra Internet.
+- Sao lưu PostgreSQL hằng ngày.
+- Với phương án nhiều máy chủ, chép bản sao lưu sang VPS khác.
+- Dùng thêm bản sao lưu hằng tuần có sẵn của Vietnix.
+- Thử khôi phục dữ liệu mỗi tháng.
+- Theo dõi website, CPU, bộ nhớ, ổ đĩa và trạng thái sao lưu.
 
-The initial size assumes a Go backend, static client and admin sites, no builds on the server, and no heavy media processing.
+Cloudflare Free đủ cho giai đoạn đầu. Cloudflare Pro chỉ là lựa chọn thêm và được tính riêng trong [tài liệu chi phí](../costs/README.md).
 
-Increase resources only when monitoring shows one of these conditions:
+## Khi nào cần nâng cấp máy chủ
 
-- CPU stays above 70% during normal traffic.
-- Memory stays above 80% or the server uses swap often.
-- Disk usage reaches 70%.
-- API response time becomes slower under normal traffic.
-- A load test fails the agreed peak traffic target.
+Mỗi VPS bắt đầu với ít nhất **2 CPU và 4 GB RAM**. Mức này đủ khoảng trống cho lúc lượng truy cập tăng, phát hành bản mới, sao lưu và bảo trì.
 
-## Business targets to approve
+Cấu hình ban đầu giả định ứng dụng chính viết bằng Go, trang khách hàng và trang quản trị đã được tạo sẵn trước khi đưa lên máy chủ, và không xử lý video hoặc ảnh nặng.
 
-| Target | Initial proposal |
+Chỉ nâng cấp khi có một trong các dấu hiệu sau:
+
+- CPU thường xuyên trên 70% khi lượng truy cập bình thường.
+- Bộ nhớ thường xuyên trên 80% hoặc máy chủ phải dùng ổ đĩa làm bộ nhớ tạm.
+- Ổ đĩa đã dùng đến 70%.
+- API chậm hơn rõ rệt khi lượng truy cập bình thường.
+- Kiểm thử tải không đạt mức đã thống nhất.
+
+## Mục tiêu cần doanh nghiệp duyệt
+
+| Mục tiêu kỹ thuật | Mức đề xuất |
 |---|---|
-| Web recovery after server failure | Within 60 minutes |
-| Database recovery after server failure | Within 4 hours |
-| Maximum database loss for Options 2 and 3 | Up to 24 hours |
-| Maximum data loss for Option 1 | Up to 7 days |
-| Maximum uploaded-file loss | Up to 7 days |
-| Bad release rollback | Within 15 minutes |
+| Phục hồi web sau khi bắt đầu xử lý | Trong vòng 60 phút |
+| Phục hồi cơ sở dữ liệu sau khi bắt đầu xử lý | Trong vòng 4 giờ |
+| Dữ liệu cơ sở dữ liệu có thể mất ở Phương án 2 và 3 | Tối đa 24 giờ |
+| Dữ liệu có thể mất ở Phương án 1 | Tối đa 7 ngày |
+| Tệp tải lên có thể mất | Tối đa 7 ngày |
+| Quay lại bản phát hành cũ | Trong vòng 15 phút |
 
-The daily database copy targets up to 24 hours of database loss. The weekly vendor backup may lose up to seven days. Add external backup storage when this risk is not acceptable.
+Gói bảo trì chỉ cam kết phản hồi trong 8 giờ làm việc đã thống nhất. Các mốc phục hồi trên được tính từ khi bắt đầu xử lý và không phải lời bảo đảm.
 
-## Assumptions and open questions
+## Điều chưa rõ cần xác nhận
 
-- **Traffic:** 600 sessions per day is known, but peak traffic is unknown. Run a load test before launch.
-- **Data:** Current database and file sizes are unknown. Confirm them before buying storage.
-- **Network:** Confirm whether Vietnix VPS products support private networking. Otherwise use IP allow-lists and encrypted database traffic.
-- **Files:** Store uploaded files on the Web VPS local disk. Monitor disk use and include files in the weekly vendor backup.
-- **Backup:** There is no off-provider backup. The business owner must accept the provider-wide recovery risk.
-- **Recovery:** The CEO must approve the recovery and data-loss targets above.
+- **Lượng truy cập:** Chưa biết lúc đông nhất có bao nhiêu người dùng cùng lúc. Cần kiểm thử tải trước khi mở cho khách hàng.
+- **Dữ liệu:** Chưa biết kích thước cơ sở dữ liệu và tệp hiện tại. Cần kiểm tra trước khi mua VPS.
+- **Mạng:** Cần hỏi Vietnix về mạng riêng giữa hai VPS. Nếu không có, phải giới hạn IP và mã hóa kết nối cơ sở dữ liệu.
+- **Tệp:** Tệp tải lên được lưu trên VPS Web và nằm trong bản sao lưu hằng tuần.
+- **Sao lưu:** Chưa có bản sao bên ngoài Vietnix. Chủ doanh nghiệp phải chấp nhận rủi ro này hoặc mua thêm nơi lưu.
+- **Hỗ trợ:** Cần ghi rõ khung giờ hỗ trợ trong hợp đồng.
 
-## Price references
+## Nguồn giá
 
-- [Vietnix VPS pricing](https://vietnix.vn/vps/)
-- [Cloudflare plans and pricing](https://www.cloudflare.com/plans/)
-- [Cloudflare DDoS protection guide](https://developers.cloudflare.com/ddos-protection/get-started/)
+- [Bảng giá VPS Vietnix](https://vietnix.vn/vps/)
+- [Gói dịch vụ và bảng giá Cloudflare](https://www.cloudflare.com/plans/)
+- [Hướng dẫn chống DDoS của Cloudflare](https://developers.cloudflare.com/ddos-protection/get-started/)

@@ -1,172 +1,183 @@
-# Incident Response Process
+# Quy trình xử lý sự cố
 
-**Status:** Proposed  
-**Audience:** CEO, product owner, support team, and engineering team
+**Trạng thái:** Đề xuất
 
-## Purpose
+**Đối tượng đọc:** CEO, chủ sản phẩm, đội hỗ trợ và đội kỹ thuật
 
-This document defines how to handle a production incident for any deployment option. The goal is to limit business impact, restore service safely, and prevent a repeat.
+## Mục đích
 
-## Response flow
+Tài liệu này hướng dẫn cách xử lý khi hệ thống đang phục vụ khách hàng gặp lỗi. Mục tiêu là giảm thiệt hại, đưa hệ thống hoạt động lại an toàn và tránh lặp lại lỗi cũ.
+
+## Các bước chính
 
 ```mermaid
 flowchart LR
-    Detect --> Assess
-    Assess --> Contain
-    Contain --> Restore
-    Restore --> Verify
-    Verify --> Review
+    PhatHien[Phát hiện] --> DanhGia[Đánh giá]
+    DanhGia --> NganChan[Ngăn lỗi lan rộng]
+    NganChan --> KhoiPhuc[Khôi phục]
+    KhoiPhuc --> KiemTra[Kiểm tra]
+    KiemTra --> RutKinhNghiem[Rút kinh nghiệm]
 ```
 
-First confirm the impact. Then stop further damage, restore service, verify business functions, and review the cause.
+Trước tiên cần biết lỗi ảnh hưởng đến ai và phần nào. Sau đó ngăn lỗi lan rộng, khôi phục dịch vụ, kiểm tra chức năng chính và tìm cách tránh lặp lại.
 
-## Severity
+## Mức độ sự cố
 
-| Level | Business impact | Examples |
+| Mức | Tác động | Ví dụ |
 |---|---|---|
-| SEV-1 | The main service is unavailable, data may be lost, or a security breach is suspected | Full outage, database unavailable, confirmed unauthorized access |
-| SEV-2 | A major function is unavailable or very slow | A main customer or admin action fails with no safe workaround |
-| SEV-3 | Impact is limited and a safe workaround exists | One minor function fails or a non-urgent alert repeats |
+| Mức 1 - Khẩn cấp | Dịch vụ chính dừng, có thể mất dữ liệu hoặc nghi có người truy cập trái phép | Toàn bộ website dừng, cơ sở dữ liệu không dùng được |
+| Mức 2 - Nghiêm trọng | Một chức năng chính dừng hoặc rất chậm | Khách hàng không thể hoàn tất thao tác chính |
+| Mức 3 - Thông thường | Tác động nhỏ và có cách làm tạm | Một chức năng phụ bị lỗi |
 
-The incident lead may raise or lower the level when the impact becomes clear.
+Người phụ trách có thể đổi mức khi đã biết rõ tác động.
 
-## Proposed response targets
+## Thời gian phản hồi
 
-| Level | Initial response | Work period | Update frequency |
-|---|---:|---|---:|
-| SEV-1 | 15 minutes | Continuous until stable | Every 30 minutes |
-| SEV-2 | 1 hour | Business hours unless impact grows | Every 60 minutes |
-| SEV-3 | 1 business day | Planned work | When status changes |
+| Mức | Thời gian phản hồi | Cách làm |
+|---|---:|---|
+| Mức 1 | Trong 8 giờ làm việc đã thống nhất | Ưu tiên cao nhất khi đã nhận việc |
+| Mức 2 | Trong 1 ngày làm việc | Xử lý trong khung giờ hỗ trợ |
+| Mức 3 | Trong 2 ngày làm việc | Đưa vào kế hoạch |
 
-The SEV-1 target requires paid 24/7 on-call coverage. Without that coverage, response starts during the agreed support hours.
+Gói bảo trì không có trực 24/7. Ngoài giờ hỗ trợ, người phụ trách chỉ nhận việc khi có thể. Không có cam kết phản hồi trong 15 phút.
 
-The deployment documents propose these recovery targets:
+Các mục tiêu phục hồi kỹ thuật dưới đây được tính từ khi bắt đầu xử lý, không phải từ khi sự cố xảy ra:
 
-- Bad release rollback: within 15 minutes.
-- Option 1 full recovery: within 4 hours.
-- Option 2 Web VPS recovery: within 60 minutes.
-- Option 2 Database VPS recovery: within 4 hours.
-- Maximum database loss: up to 24 hours with daily cross-server copies.
-- Maximum file loss: up to 7 days with the included weekly vendor backup.
+- Quay lại bản phát hành cũ: trong vòng 15 phút nếu đã có sẵn bản ổn định.
+- Phương án 1: cố gắng phục hồi toàn bộ trong vòng 4 giờ.
+- Phương án 2: cố gắng phục hồi VPS Web trong vòng 60 phút.
+- Phương án 2: cố gắng phục hồi VPS cơ sở dữ liệu trong vòng 4 giờ.
+- Có thể mất tối đa 24 giờ dữ liệu cơ sở dữ liệu nếu dùng bản sao hằng ngày.
+- Có thể mất tối đa 7 ngày dữ liệu tệp nếu chỉ dùng bản sao hằng tuần của Vietnix.
 
-These are business targets, not guarantees. The CEO must approve them. Faster database recovery needs more frequent backups and more maintenance work.
+Đây là mục tiêu, không phải lời bảo đảm. Thời gian thật còn phụ thuộc nguyên nhân lỗi, tình trạng bản sao lưu và khả năng truy cập máy chủ.
 
-## Roles
+## Người tham gia
 
-| Role | Main duty |
+| Vai trò | Việc chính |
 |---|---|
-| Incident lead | Sets severity, assigns work, makes recovery decisions, and keeps the timeline |
-| Technical responder | Finds the cause, contains the issue, restores service, and records changes |
-| Business contact | Confirms business impact and sends updates to users and leaders |
+| Người phụ trách sự cố | Xác định mức độ, chọn cách xử lý và ghi lại các quyết định |
+| Người xử lý kỹ thuật | Tìm nguyên nhân, ngăn lỗi lan rộng và khôi phục hệ thống |
+| Đầu mối kinh doanh | Xác nhận tác động và cập nhật thông tin cho khách hàng hoặc lãnh đạo |
 
-One person may hold more than one role in a small team. The incident lead must still keep one clear record of decisions and actions.
+Trong nhóm nhỏ, một người có thể làm nhiều vai trò. Tuy vậy, vẫn phải có một bản ghi chung về việc đã làm.
 
-## Process
+## Quy trình chi tiết
 
-### 1. Detect and record
+### 1. Ghi nhận sự cố
 
-- Open an incident record.
-- Record the start time, detection source, affected functions, and known user impact.
-- Assign the incident lead and technical responder.
-- Set the first severity level.
+- Tạo bản ghi sự cố.
+- Ghi thời gian bắt đầu, cách phát hiện và chức năng bị ảnh hưởng.
+- Ghi tác động đã biết đến người dùng.
+- Chỉ định người phụ trách và người xử lý kỹ thuật.
+- Chọn mức độ ban đầu.
 
-### 2. Assess
+### 2. Đánh giá
 
-- Check the public site, admin site, API, database, and recent alerts.
-- Check whether a release, configuration change, traffic spike, or server fault happened near the start time.
-- Decide which deployment components are affected.
-- Do not change several parts at the same time.
+- Kiểm tra website, trang quản trị, API, cơ sở dữ liệu và cảnh báo gần đây.
+- Kiểm tra xem gần thời điểm xảy ra lỗi có phát hành bản mới, đổi cấu hình, tăng mạnh lưu lượng hoặc lỗi máy chủ hay không.
+- Xác định phần nào đang bị ảnh hưởng.
+- Không thay đổi nhiều phần cùng lúc.
 
-### 3. Contain
+### 3. Ngăn lỗi lan rộng
 
-- Stop a bad deployment or unsafe job.
-- Roll back the last release when it is the likely cause.
-- Limit harmful traffic when an attack is suspected.
-- Isolate an affected server or account when unauthorized access is suspected.
-- Preserve logs and other evidence for a security incident.
+- Dừng bản phát hành lỗi hoặc tác vụ không an toàn.
+- Quay lại bản cũ nếu bản mới có thể là nguyên nhân.
+- Chặn lưu lượng có hại nếu nghi bị tấn công.
+- Khóa máy chủ hoặc tài khoản bị ảnh hưởng nếu nghi có truy cập trái phép.
+- Giữ lại nhật ký và bằng chứng nếu liên quan đến bảo mật.
 
-Containment may reduce features for a short time. The incident lead must record that decision and its business impact.
+Việc ngăn lỗi có thể tạm thời làm mất một số chức năng. Người phụ trách phải ghi lại quyết định và tác động.
 
-### 4. Restore
+### 4. Khôi phục
 
-Use the smallest safe action:
+Ưu tiên cách làm nhỏ và an toàn nhất:
 
-1. Restart only the failed process when its state is safe.
-2. Roll back to the last stable application image for a bad release.
-3. Rebuild a failed VPS from the documented configuration.
-4. Restore PostgreSQL from the daily cross-server copy or latest weekly vendor backup when the database cannot be recovered safely.
+1. Chỉ khởi động lại phần bị lỗi.
+2. Quay lại bản ứng dụng ổn định gần nhất.
+3. Dựng lại VPS từ hướng dẫn đã có.
+4. Khôi phục PostgreSQL từ bản sao hằng ngày trên VPS khác.
+5. Dùng bản sao hằng tuần của Vietnix nếu không còn bản tốt hơn.
 
-Do not delete damaged data or logs until the incident lead confirms that they are no longer needed for recovery or review.
+Không xóa dữ liệu hoặc nhật ký bị hỏng cho đến khi xác nhận chúng không còn cần để phục hồi hoặc tìm nguyên nhân.
 
-### 5. Verify
+### 5. Kiểm tra
 
-- Confirm the public site, admin site, and API respond normally.
-- Test the main customer and admin flows.
-- Confirm database reads and writes work.
-- Confirm monitoring and backup jobs are healthy.
-- Watch error rate and resource use before closing the incident.
-- Ask the business contact to confirm that the user impact is over.
+- Xác nhận website, trang quản trị và API hoạt động.
+- Thử các bước chính của khách hàng và quản trị viên.
+- Xác nhận đọc và ghi cơ sở dữ liệu hoạt động.
+- Xác nhận cảnh báo và sao lưu hoạt động.
+- Theo dõi lỗi và tài nguyên trước khi đóng sự cố.
+- Yêu cầu đầu mối kinh doanh xác nhận người dùng không còn bị ảnh hưởng.
 
-### 6. Communicate and close
+### 6. Cập nhật và đóng sự cố
 
-Each update must state:
+Mỗi lần cập nhật cần nêu:
 
-- Current impact.
-- Current severity.
-- Work completed.
-- Next action.
-- Time of the next update.
+- Tác động hiện tại.
+- Mức độ hiện tại.
+- Việc đã làm.
+- Việc tiếp theo.
+- Thời gian cập nhật tiếp theo.
 
-The closing update must state the recovery time, known data loss, remaining risk, and follow-up owner.
+Khi đóng sự cố, cần ghi thời gian phục hồi, dữ liệu đã mất nếu có, rủi ro còn lại và người phụ trách việc tiếp theo.
 
-## Security incident path
+## Khi nghi có truy cập trái phép
 
 ```mermaid
 flowchart LR
-    Suspect[Suspected access] --> Isolate
-    Isolate --> Preserve[Preserve evidence]
-    Preserve --> Secure[Revoke and rotate access]
-    Secure --> Assess[Assess data impact]
-    Assess --> Notify[Notify owner]
+    NghiNgo[Nghi có truy cập trái phép] --> CoLap[Cô lập]
+    CoLap --> GiuBangChung[Giữ bằng chứng]
+    GiuBangChung --> DoiQuyen[Dừng và đổi quyền truy cập]
+    DoiQuyen --> DanhGia[Kiểm tra dữ liệu]
+    DanhGia --> ThongBao[Thông báo chủ doanh nghiệp]
 ```
 
-- Do not announce an unconfirmed cause.
-- Revoke affected sessions, keys, or accounts after evidence is preserved.
-- Ask the business owner and legal adviser to decide whether external notice is required.
-- Never put secrets or personal data in the incident record.
+- Không công bố nguyên nhân khi chưa xác nhận.
+- Giữ bằng chứng trước khi khóa phiên, khóa truy cập hoặc tài khoản.
+- Chủ doanh nghiệp và cố vấn pháp lý quyết định có cần thông báo ra bên ngoài hay không.
+- Không ghi mật khẩu, mã truy cập hoặc dữ liệu cá nhân vào bản ghi sự cố.
 
-## Post-incident review
+## Xem lại sau sự cố
 
-Complete a review within two business days for SEV-1 and SEV-2 incidents. Record:
+Với sự cố Mức 1 và Mức 2, nên xem lại trong vòng hai ngày làm việc. Nội dung gồm:
 
-- A short impact summary.
-- A factual timeline.
-- The direct cause and contributing conditions.
-- What detected the issue and what delayed recovery.
-- Corrective actions, owners, and due dates.
-- Monitoring, runbook, or architecture changes.
+- Tác động chính.
+- Dòng thời gian thực tế.
+- Nguyên nhân trực tiếp và yếu tố liên quan.
+- Cách phát hiện lỗi.
+- Điều làm chậm việc phục hồi.
+- Việc cần sửa, người phụ trách và hạn hoàn thành.
+- Thay đổi cần có trong cảnh báo, hướng dẫn hoặc kiến trúc.
 
-The review must focus on system and process gaps. It must not assign personal blame.
+Việc xem lại tập trung vào hệ thống và cách làm, không quy lỗi cá nhân.
 
-## Cost treatment
+## Chi phí xử lý sự cố
 
-Routine maintenance hours do not include incident response. Track incident time from detection through verification and reporting.
+Phí bảo trì thường kỳ không bao gồm thời gian xử lý sự cố ngoài gói.
 
-> Incident cost = response hours x VND 100,000 + emergency vendor cost + VAT
+> Chi phí sự cố = số giờ xử lý x 300.000 VND + chi phí của nhà cung cấp khác
 
-The support contract must define:
+Đơn giá **300.000 VND/giờ** áp dụng chung cho ban ngày, buổi tối, cuối tuần và ngày lễ.
 
-- Support hours and time zone.
-- Initial response targets.
-- On-call fee.
-- Whether the VND 100,000 hourly rate also applies after hours.
-- Included incident hours, if any.
-- Who can approve emergency cost.
+- Tính theo mỗi 30 phút.
+- Chỉ bắt đầu việc có tính phí sau khi khách hàng đồng ý, trừ khi hai bên đã thống nhất trước về trường hợp khẩn cấp.
+- Không có phụ phí ngoài giờ.
+- Không cam kết luôn có người nhận việc ngoài giờ.
 
-## References
+## Nội dung hợp đồng cần ghi rõ
 
-- [Maintenance work and cost](./maintenance-work-and-cost.md)
-- [Deployment options and recovery targets](../deployments/README.md)
-- [Option 1 recovery](../deployments/option-1-single-server/architecture.md)
-- [Option 2 recovery](../deployments/option-2-two-servers/architecture.md)
-- [Option 3 architecture](../deployments/option-3-separate-services/architecture.md)
+- Khung giờ hỗ trợ và múi giờ.
+- Thời gian phản hồi.
+- Người có quyền duyệt chi phí phát sinh.
+- Cách xử lý trường hợp không liên lạc được người duyệt.
+- Chi phí của nhà cung cấp khác.
+- Mức dữ liệu có thể mất và thời gian phục hồi mong muốn.
+
+## Tài liệu tham khảo
+
+- [Công việc và chi phí bảo trì](./maintenance-work-and-cost.md)
+- [Các phương án triển khai và mục tiêu phục hồi](../deployments/README.md)
+- [Phục hồi Phương án 1](../deployments/option-1-single-server/architecture.md)
+- [Phục hồi Phương án 2](../deployments/option-2-two-servers/architecture.md)
+- [Kiến trúc Phương án 3](../deployments/option-3-separate-services/architecture.md)
