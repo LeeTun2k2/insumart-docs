@@ -139,3 +139,4 @@ Mức giá này là giá ưu đãi cho năm đầu. Hai bên nên xem lại khi 
 - [Kiến trúc Phương án 1](../deployments/option-1-single-server/architecture.md)
 - [Kiến trúc Phương án 2](../deployments/option-2-two-servers/architecture.md)
 - [Kiến trúc Phương án 3](../deployments/option-3-separate-services/architecture.md)
+- [Phương án 4: Giám sát tối thiểu (rút gọn chi phí vận hành)](./goi-giam-sat-toi-thieu.md)
