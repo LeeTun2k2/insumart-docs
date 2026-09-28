@@ -40,9 +40,9 @@ Cảnh báo được gửi tự động. Không có người ngồi theo dõi li
 | Xem thời gian hoạt động, lỗi và tốc độ phản hồi | Phát hiện vấn đề lặp lại |
 | Xem CPU, bộ nhớ, ổ đĩa và mức tăng dữ liệu | Phát hiện sớm nguy cơ thiếu tài nguyên |
 | Xem truy vấn PostgreSQL chậm và số kết nối | Có hướng xử lý vấn đề cơ sở dữ liệu |
-| Kiểm tra bản sao lưu | Có bản sao hằng ngày và bản sao Vietnix hằng tuần |
+| Kiểm tra bản sao lưu | Có bản sao hằng ngày và bản sao của nhà cung cấp hằng tuần |
 | Xem bản cập nhật hệ điều hành và bảo mật | Lên lịch hoặc cài bản cập nhật an toàn |
-| Xem Cloudflare, tường lửa và quyền vào trang quản trị | Truy cập công khai vẫn được giới hạn |
+| Xem tường lửa và quyền vào trang quản trị | Truy cập công khai vẫn được giới hạn |
 | Kiểm tra bản ứng dụng ổn định gần nhất | Có thể quay lại bản cũ khi cần |
 | Gửi báo cáo ngắn | Khách hàng biết tình trạng, rủi ro và việc đã làm |
 
@@ -87,10 +87,9 @@ Phương án 2 là lựa chọn đề xuất. Phương án này có hai máy ch�
 
 ## Công việc ngoài gói
 
-Mọi công việc ngoài gói có đơn giá chung là **300.000 VND/giờ**.
+Mọi công việc ngoài gói được báo giá riêng theo nhu cầu, phạm vi và mức độ ưu tiên.
 
-- Áp dụng cùng một giá vào ban ngày, buổi tối, cuối tuần và ngày lễ.
-- Tính theo mỗi 30 phút.
+- Báo giá được gửi trước khi làm.
 - Chỉ làm sau khi khách hàng đồng ý.
 - Không cam kết người phụ trách luôn sẵn sàng ngoài giờ.
 - Phí của nhà cung cấp khác được tính riêng.
@@ -105,10 +104,9 @@ Các việc thường nằm ngoài gói:
 
 ## Thời gian phản hồi
 
-- Gói thường: phản hồi trong vòng 8 giờ làm việc đã thống nhất.
+- Gói thường: phản hồi trong 30 phút thuộc khung giờ hỗ trợ đã thống nhất.
 - Không có trực 24/7.
-- Không cam kết phản hồi trong 15 phút.
-- Trường hợp khẩn cấp ngoài giờ chỉ được xử lý khi người phụ trách có thể nhận việc.
+- Ngoài khung giờ hỗ trợ, người phụ trách chỉ nhận việc khi có thể.
 
 Nếu doanh nghiệp cần trực 24/7, nên thuê thêm đơn vị chuyên trực hệ thống.
 
@@ -118,7 +116,7 @@ Hai bên cần xem lại phí khi:
 
 - Thêm máy chủ, cơ sở dữ liệu hoặc môi trường.
 - Cần công cụ theo dõi hoặc bảo mật có phí.
-- Yêu cầu phản hồi nhanh hơn.
+- Yêu cầu trực ngoài khung giờ hỗ trợ.
 - Tăng số lần sao lưu hoặc thời gian giữ bản sao.
 - Lưu lượng, dữ liệu hoặc số sự cố tăng nhiều.
 - Phạm vi công việc thực tế thường xuyên vượt gói.
@@ -128,10 +126,10 @@ Mức giá này là giá ưu đãi cho năm đầu. Hai bên nên xem lại khi 
 ## Điều cần xác nhận
 
 - Phương án 2 có phí bảo trì 2,5 triệu VND/tháng trước VAT.
-- Công việc ngoài gói có giá 300.000 VND/giờ.
+- Công việc ngoài gói được báo giá theo nhu cầu và phải được duyệt trước.
 - Khung giờ hỗ trợ cần được ghi rõ trong hợp đồng.
 - Khách hàng cần chỉ định người có quyền duyệt việc phát sinh.
-- Việc cài hệ thống theo dõi, sao lưu và phát hành ban đầu nằm trong phí cài đặt 8 triệu VND.
+- Việc cài hệ thống theo dõi và sao lưu ban đầu nằm trong phí cài đặt 5,25 triệu VND.
 
 ## Tài liệu tham khảo
 

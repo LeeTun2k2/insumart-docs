@@ -15,27 +15,26 @@
 
 ```mermaid
 flowchart LR
-    NguoiDung[Khách hàng hoặc quản trị viên] --> CF[Cloudflare]
-    CF --> KhachHang[VPS trang khách hàng]
-    CF --> QuanTri[VPS trang quản trị]
-    CF --> UngDung[VPS ứng dụng chính]
+    NguoiDung[Khách hàng hoặc quản trị viên] --> KhachHang[VPS trang khách hàng]
+    NguoiDung --> QuanTri[VPS trang quản trị]
+    NguoiDung --> UngDung[VPS ứng dụng chính]
     KhachHang --> UngDung
     QuanTri --> UngDung
     UngDung --> DB[(VPS PostgreSQL)]
     UngDung --> Tep[(Tệp tải lên)]
-    DB -. hằng tuần .-> SaoLuu[Bản sao lưu Vietnix]
+    DB -. hằng tuần .-> SaoLuu[Bản sao lưu nhà cung cấp]
 ```
 
 Redis có thể dùng thêm một VPS khi thật sự cần. Việc dùng nhiều VPS chỉ tách máy chủ. Để chia ứng dụng thành nhiều dịch vụ nhỏ, còn cần xác định rõ phần việc, cách phát hành và cách các dịch vụ trao đổi dữ liệu. Chưa thể làm việc đó khi chưa có thiết kế chi tiết của ứng dụng.
 
 ## Cấu hình tối thiểu
 
-| Máy chủ | Gói Vietnix | Giá trước VAT mỗi tháng |
+| Máy chủ | Cấu hình | Giá trước VAT mỗi tháng |
 |---|---|---:|
-| VPS trang khách hàng | Cheap 2: 2 CPU, 4 GB RAM | 250.000 VND |
-| VPS trang quản trị | Cheap 2: 2 CPU, 4 GB RAM | 250.000 VND |
-| VPS ứng dụng chính | Cheap 2: 2 CPU, 4 GB RAM | 250.000 VND |
-| VPS cơ sở dữ liệu | Cheap 2: 2 CPU, 4 GB RAM | 250.000 VND |
+| VPS trang khách hàng | 2 CPU, 4 GB RAM | 250.000 VND |
+| VPS trang quản trị | 2 CPU, 4 GB RAM | 250.000 VND |
+| VPS ứng dụng chính | 2 CPU, 4 GB RAM | 250.000 VND |
+| VPS cơ sở dữ liệu | 2 CPU, 4 GB RAM | 250.000 VND |
 
 ## Chi phí
 
@@ -46,7 +45,7 @@ Redis có thể dùng thêm một VPS khi thật sự cần. Việc dùng nhiề
 | Bảo trì một năm, đã gồm VAT | 52,8 triệu VND |
 | **Tổng** | **78 triệu VND** |
 
-Phí bảo trì là 4 triệu VND/tháng trước VAT. Công việc ngoài gói có giá 300.000 VND/giờ cho mọi khung giờ.
+Phí bảo trì là 4 triệu VND/tháng trước VAT. Công việc ngoài gói được báo giá theo nhu cầu và phải được khách hàng duyệt trước.
 
 Nếu dùng thêm VPS Redis, chi phí VPS tăng khoảng 3,3 triệu VND mỗi năm sau VAT. Hệ thống có máy dự phòng thật sự sẽ tốn nhiều hơn vì cần thêm VPS và bộ chia lưu lượng.
 

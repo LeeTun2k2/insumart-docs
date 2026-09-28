@@ -1,214 +1,119 @@
-# Chi phí vận hành hệ thống thật
+# Bảng báo giá vận hành hệ thống
 
-**Trạng thái:** Đề xuất
+**Trạng thái:** Bản cuối để phê duyệt
 
 **Đối tượng đọc:** CEO, chủ sản phẩm và đội kỹ thuật
 
 **Ngày kiểm tra giá:** 26 tháng 9 năm 2026
 
-## Mục đích
+## Tóm tắt báo giá
 
-Tài liệu này ước tính chi phí chạy hệ thống trong một, hai và ba năm.
-
-Chi phí không gồm làm tính năng mới, kiểm thử sản phẩm hoặc chuyển dữ liệu lớn.
-
-## Phương án đề xuất
-
-Dùng hai VPS Vietnix Cheap 2:
-
-- Một VPS chạy website và ứng dụng.
-- Một VPS chạy PostgreSQL.
-- Tệp khách hàng tải lên được lưu trên VPS Web.
+Phương án khuyến nghị là **hai VPS**, gồm một VPS Web và một VPS PostgreSQL.
 
 ```mermaid
 flowchart LR
-    NguoiDung[Người dùng] --> Cloudflare
-    Cloudflare --> Web[VPS Web]
-    Web --> DB[(VPS cơ sở dữ liệu)]
-    DB -. sao chép hằng ngày .-> Web
-    DB -. sao lưu hằng tuần .-> SaoLuu[Bản sao lưu Vietnix]
+    HaTang[Hạ tầng bắt buộc] --> Setup[Setup một lần]
+    Setup --> VanHanh{Chọn vận hành}
+    VanHanh --> Khong[Không vận hành]
+    VanHanh --> Co[Có vận hành]
 ```
 
-Cách này giúp lỗi website không ảnh hưởng trực tiếp đến máy chủ cơ sở dữ liệu.
+| Lựa chọn theo Phương án 2 | Năm đầu | Từ năm thứ hai |
+|---|---:|---:|
+| Không dùng gói vận hành | **11,85 triệu VND** | **6,6 triệu VND/năm** |
+| Dùng gói vận hành | **44,85 triệu VND** | **39,6 triệu VND/năm** |
 
-## Các số dùng để tính
+Các tổng trên đã gồm VAT 10% cho VPS và gói vận hành. Phí setup 5,25 triệu VND là giá trọn gói và không cộng thêm VAT.
 
-- Lưu lượng dự kiến khoảng 600 lượt truy cập mỗi ngày.
-- Mỗi VPS có 2 CPU, 4 GB RAM và 40 GB SSD.
-- Mỗi VPS được tính ở mức 250.000 VND/tháng, chưa VAT.
-- Hai VPS có giá 500.000 VND/tháng, chưa VAT.
-- Phí cài đặt ban đầu là 8 triệu VND, trả một lần.
-- Phí bảo trì là 2,5 triệu VND/tháng, chưa VAT.
-- Công việc ngoài gói là 300.000 VND/giờ cho mọi khung giờ.
-- Các bảng dài hạn dùng VAT 10% cho VPS và phí bảo trì.
-- Tên miền, công cụ theo dõi miễn phí và Cloudflare Free không phát sinh thêm phí.
+## 1. Chi phí bắt buộc
 
-Phí cài đặt 8 triệu VND là số tiền trọn gói dùng trong kế hoạch này. Không cộng thêm VAT vào con số đó.
+Chi phí bắt buộc là tiền thuê VPS để hệ thống hoạt động. Có ba lựa chọn:
 
-## Các khoản bắt buộc
+| Phương án | Cấu hình | Chi phí sau VAT | Ưu điểm | Nhược điểm | Đánh giá |
+|---|---|---:|---|---|---|
+| 1. Một VPS | Website, ứng dụng và PostgreSQL dùng chung một VPS | **275.000 VND/tháng**; **3,3 triệu VND/năm** | Chi phí thấp nhất. Dễ quản lý. | VPS lỗi thì toàn bộ hệ thống dừng. Website và cơ sở dữ liệu tranh tài nguyên. | Chỉ chọn khi ưu tiên tiết kiệm nhất. |
+| 2. Hai VPS | Một VPS Web và một VPS PostgreSQL | **550.000 VND/tháng**; **6,6 triệu VND/năm** | Tách website khỏi cơ sở dữ liệu. Cân bằng tốt giữa chi phí và an toàn. Dễ mở rộng. | Mỗi VPS vẫn là một điểm lỗi. Cần quản lý hai máy chủ. | **Khuyến nghị.** |
+| 3. Bốn VPS | Trang khách hàng, trang quản trị, ứng dụng và PostgreSQL dùng bốn VPS riêng | **1,1 triệu VND/tháng**; **13,2 triệu VND/năm** | Lỗi ở một trang có thể ít ảnh hưởng đến trang còn lại. Có thể phát hành từng phần riêng. | Chi phí và công quản lý cao. Ứng dụng và PostgreSQL vẫn là điểm lỗi. Chưa phù hợp với lưu lượng hiện tại. | Chưa cần dùng ở giai đoạn đầu. |
 
-| Hạng mục | Cách tính |
-|---|---|
-| Hai VPS | Trả hằng tháng |
-| Cài đặt ban đầu | Trả một lần |
-| Bảo trì | Trả hằng tháng |
-| Tên miền hiện có | Không phát sinh thêm phí |
+Giá mỗi VPS là 250.000 VND/tháng trước VAT. Mỗi VPS có 2 CPU, 4 GB RAM và 40 GB SSD.
+
+Các mục sau không phát sinh thêm phí nhà cung cấp:
+
+| Hạng mục | Chi phí |
+|---|---:|
+| Tên miền hiện có | 0 VND |
 | Lưu tệp trên VPS Web | Đã gồm trong giá VPS |
-| Bản sao lưu hằng tuần của Vietnix | Đã gồm trong giá VPS |
-| Công cụ theo dõi tự quản lý | Không mất phí nhà cung cấp |
-| Cloudflare Free | Không mất phí |
+| Bản sao lưu hằng tuần của nhà cung cấp | Đã gồm trong giá VPS |
+| Công cụ theo dõi tự quản lý | 0 VND |
 
-## Chi phí hai VPS
+Giá VPS không tính khuyến mãi. Giá thật có thể thấp hơn nếu nhà cung cấp giảm giá khi trả trước.
 
-| Hạng mục | 1 năm | 2 năm | 3 năm |
-|---|---:|---:|---:|
-| Hai VPS trước VAT | 6 triệu VND | 12 triệu VND | 18 triệu VND |
-| VAT 10% | 600.000 VND | 1,2 triệu VND | 1,8 triệu VND |
-| **Tổng tiền VPS** | **6,6 triệu VND** | **13,2 triệu VND** | **19,8 triệu VND** |
+## 2. Chi phí setup ban đầu
 
-Giá trên không tính khuyến mãi. Giá thật có thể thấp hơn nếu Vietnix giảm giá khi trả trước.
+Phí setup trả một lần. Báo giá này áp dụng cho Phương án 2 được khuyến nghị:
 
-## Phí cài đặt ban đầu
-
-Phí cài đặt trọn gói là **8 triệu VND**. Phạm vi gồm:
-
-| Công việc | Thời gian dự kiến |
+| Phương án | Phí setup trọn gói |
 |---|---:|
-| Tạo máy chủ và cấp quyền truy cập | 1 giờ |
-| Cài đặt bảo mật cho hệ điều hành và tường lửa | 4 giờ |
-| Cấu hình Cloudflare, HTTPS và cổng vào website | 4 giờ |
-| Cấu hình PostgreSQL | 3 giờ |
-| Cấu hình nơi lưu tệp và quyền truy cập | 2 giờ |
-| Cấu hình sao lưu và thử khôi phục | 4 giờ |
-| Cấu hình theo dõi, nhật ký và cảnh báo | 3 giờ |
-| Cấu hình phát hành và quay lại bản cũ | 3 giờ |
-| Viết hướng dẫn vận hành và bàn giao | 2 giờ |
-| Kiểm tra hệ thống trước khi mở cho khách hàng | 2 giờ |
-| Thời gian dự phòng | 4 giờ |
-| **Tổng** | **32 giờ** |
+| 2. Hai VPS | **5,25 triệu VND** |
 
-Nếu khách hàng yêu cầu thêm việc ngoài danh sách, phần thêm được báo trước và tính 300.000 VND/giờ.
+Chi tiết công việc:
 
-## Phí bảo trì
+| Công việc | Thời gian dự kiến | Chi phí phân bổ |
+|---|---:|---:|
+| Tạo hai VPS và cấp quyền truy cập | 1 giờ | 250.000 VND |
+| Cài bảo mật hệ điều hành và tường lửa | 4 giờ | 1 triệu VND |
+| Cấu hình HTTPS và cổng vào website | 4 giờ | 1 triệu VND |
+| Cấu hình PostgreSQL và giới hạn kết nối | 3 giờ | 750.000 VND |
+| Cấu hình nơi lưu tệp và quyền truy cập | 2 giờ | 500.000 VND |
+| Cấu hình sao lưu và thử khôi phục | 4 giờ | 1 triệu VND |
+| Cấu hình theo dõi, nhật ký và cảnh báo | 3 giờ | 750.000 VND |
+| **Tổng** | **21 giờ** | **5,25 triệu VND** |
 
-Phí bảo trì là **2,5 triệu VND/tháng trước VAT**.
+Chi phí được phân bổ theo mức 250.000 VND/giờ để làm rõ từng mục. Đây không phải đơn giá tính thêm. Các công việc trong bảng không phát sinh thêm phí. Yêu cầu ngoài phạm vi phải được báo giá và duyệt trước khi làm.
 
-| Thời hạn | Trước VAT | VAT 10% | Tổng tiền |
+## 3. Chi phí vận hành
+
+Có hai lựa chọn cho Phương án 2:
+
+| Lựa chọn | Phí cố định | Phạm vi | Khả năng hỗ trợ khi có sự cố |
+|---|---:|---|---|
+| Không vận hành | **0 VND/tháng** | Không có người phụ trách theo dõi và kiểm tra định kỳ. Khách hàng tự kiểm tra cảnh báo, sao lưu, tài nguyên và bản cập nhật. | Chỉ sửa khi khách hàng báo và người phụ trách có thể nhận việc. **Không bảo đảm có mặt hoặc thời gian phản hồi.** Chi phí được báo theo nhu cầu và phải được khách hàng duyệt trước. |
+| Có vận hành | **2,5 triệu VND/tháng trước VAT**; **2,75 triệu VND/tháng sau VAT** | Theo dõi, kiểm tra, bảo trì và báo cáo theo danh sách bên dưới. | Phản hồi trong 30 phút thuộc khung giờ hỗ trợ đã thống nhất. Không trực 24/7. |
+
+### Việc làm khi có gói vận hành
+
+| Tần suất | Công việc |
+|---|---|
+| Tự động | Kiểm tra website, trang quản trị, API, lỗi mới, tài nguyên VPS, kết nối PostgreSQL, bản sao lưu và truy cập bất thường. |
+| Hai lần mỗi tháng | Xem cảnh báo, tốc độ phản hồi, CPU, bộ nhớ, ổ đĩa, mức tăng dữ liệu, truy vấn chậm, bản sao lưu, tường lửa và bản ứng dụng ổn định gần nhất. |
+| Hằng tháng | Thử khôi phục PostgreSQL; cài bản cập nhật đã lên lịch; xem lại quyền truy cập, chi phí, dung lượng và hướng dẫn phục hồi; gửi báo cáo ngắn. |
+| Hằng quý | Diễn tập phục hồi; xem lại mức mất dữ liệu có thể chấp nhận; kiểm tra phần mềm cũ và đánh giá lại phương án hạ tầng. |
+
+Gói vận hành không gồm sửa lỗi mã nguồn, làm tính năng, nâng cấp lớn, chuyển dữ liệu lớn, trực 24/7 hoặc xử lý sự cố không giới hạn.
+
+### Tổng ngân sách Phương án 2
+
+| Lựa chọn | 1 năm | 2 năm | 3 năm |
 |---|---:|---:|---:|
-| 1 tháng | 2,5 triệu VND | 250.000 VND | **2,75 triệu VND** |
-| 1 năm | 30 triệu VND | 3 triệu VND | **33 triệu VND** |
-| 2 năm | 60 triệu VND | 6 triệu VND | **66 triệu VND** |
-| 3 năm | 90 triệu VND | 9 triệu VND | **99 triệu VND** |
+| Không dùng gói vận hành | **11,85 triệu VND** | **18,45 triệu VND** | **25,05 triệu VND** |
+| Dùng gói vận hành | **44,85 triệu VND** | **84,45 triệu VND** | **124,05 triệu VND** |
 
-Gói bảo trì gồm:
+Các tổng trên gồm VPS, phí setup một lần và phí vận hành nếu chọn.
 
-- Theo dõi hai VPS, website và cơ sở dữ liệu.
-- Kiểm tra cảnh báo, tài nguyên và bản sao lưu.
-- Cập nhật bảo mật theo kế hoạch.
-- Thử khôi phục dữ liệu mỗi tháng.
-- Diễn tập phục hồi mỗi quý.
-- Gửi báo cáo ngắn mỗi tháng.
-- Phản hồi trong vòng 8 giờ làm việc đã thống nhất.
+## Điều cần chốt
 
-Gói không gồm sửa lỗi mã nguồn, làm tính năng, nâng cấp lớn, chuyển dữ liệu lớn, trực 24/7 hoặc xử lý sự cố không giới hạn.
-
-## Tổng ngân sách
-
-Tổng dưới đây gồm hai VPS, cài đặt ban đầu, bảo trì và VAT theo giả định trên.
-
-| Hạng mục | 1 năm | 2 năm | 3 năm |
-|---|---:|---:|---:|
-| Hai VPS | 6,6 triệu VND | 13,2 triệu VND | 19,8 triệu VND |
-| Cài đặt ban đầu | 8 triệu VND | 8 triệu VND | 8 triệu VND |
-| Bảo trì | 33 triệu VND | 66 triệu VND | 99 triệu VND |
-| **Tổng ngân sách** | **47,6 triệu VND** | **87,2 triệu VND** | **126,8 triệu VND** |
-
-```mermaid
-flowchart LR
-    VPS[VPS: 6,6 triệu] --> Tong[Năm đầu: 47,6 triệu]
-    CaiDat[Cài đặt: 8 triệu] --> Tong
-    BaoTri[Bảo trì: 33 triệu] --> Tong
-```
-
-Từ năm thứ hai, không còn phí cài đặt. Chi phí thêm mỗi năm dự kiến là **39,6 triệu VND**, gồm 6,6 triệu tiền VPS và 33 triệu tiền bảo trì.
-
-## Phương án một máy chủ
-
-Phương án này dùng một VPS cho website, ứng dụng, PostgreSQL và tệp.
-
-Các số dùng để tính:
-
-- Cài đặt ban đầu: 7 triệu VND.
-- Bảo trì: 2 triệu VND/tháng trước VAT, tương đương 26,4 triệu VND/năm sau VAT.
-- Một VPS: 3,3 triệu VND/năm sau VAT.
-
-| Thời hạn | Tổng chi phí |
-|---|---:|
-| 1 năm | **36,7 triệu VND** |
-| 2 năm | **66,4 triệu VND** |
-| 3 năm | **96,1 triệu VND** |
-
-Phương án một máy chủ tiết kiệm 10,9 triệu VND trong năm đầu. Đổi lại, khi VPS gặp lỗi, toàn bộ website và cơ sở dữ liệu cùng dừng.
-
-## Chi phí có thể phát sinh
-
-### Công việc ngoài gói
-
-Mọi công việc ngoài gói có cùng đơn giá **300.000 VND/giờ**, kể cả buổi tối, cuối tuần và ngày lễ.
-
-- Chỉ làm sau khi khách hàng đồng ý.
-- Tính theo mỗi 30 phút.
-- Không cam kết luôn sẵn sàng ngoài giờ.
-- Chi phí của nhà cung cấp khác được tính riêng.
-
-Ví dụ, nếu một tháng có 4 giờ phát sinh thì chi phí thêm là **1,2 triệu VND**.
-
-### Trực 24/7
-
-Gói bảo trì không có trực 24/7 và không cam kết phản hồi trong 15 phút. Nếu doanh nghiệp cần mức này, phải dùng hợp đồng riêng hoặc thêm một đơn vị trực chuyên nghiệp.
-
-### Cloudflare Pro
-
-Cloudflare Pro là tùy chọn. Ước tính dùng giá 20 USD/tháng, tỷ giá 27.000 VND/USD và thêm 10% cho thuế cùng biến động tỷ giá.
-
-| Chi phí | 1 năm | 2 năm | 3 năm |
-|---|---:|---:|---:|
-| Cloudflare Pro | 7,128 triệu VND | 14,256 triệu VND | 21,384 triệu VND |
-| Ngân sách bắt buộc | 47,6 triệu VND | 87,2 triệu VND | 126,8 triệu VND |
-| **Tổng nếu thêm Cloudflare Pro** | **54,728 triệu VND** | **101,456 triệu VND** | **148,184 triệu VND** |
-
-Cloudflare Free vẫn là lựa chọn mặc định.
-
-## Rủi ro sao lưu
-
-Vietnix cho biết gói VPS có một bản sao lưu tự động mỗi tuần và chỉ giữ bản mới nhất trên máy chủ sao lưu riêng.
-
-Nếu không mua thêm nơi lưu bên ngoài:
-
-- Có thể mất tối đa bảy ngày dữ liệu tệp.
-- Có thể chỉ còn một bản sao lưu của Vietnix.
-- Sự cố lớn ở Vietnix hoặc tài khoản Vietnix có thể ảnh hưởng cả hệ thống và bản sao lưu.
-
-Chủ doanh nghiệp phải chấp nhận rủi ro này. Nên mua thêm nơi lưu bên ngoài khi dữ liệu đã có giá trị cao.
-
-## Nội dung cần chốt
-
-Chủ doanh nghiệp cần chọn:
-
-- Phương án hai máy chủ hay một máy chủ.
-- Thời hạn một, hai hoặc ba năm.
-- Khung giờ hỗ trợ.
-- Bản sao lưu hằng tuần có đủ hay không.
-- Cách duyệt công việc phát sinh.
+- Chọn một, hai hay bốn VPS.
+- Chọn có hoặc không có gói vận hành.
+- Ghi rõ khung giờ hỗ trợ nếu có gói vận hành.
+- Xác nhận bản sao lưu hằng tuần có đủ hay cần nơi lưu bên ngoài nhà cung cấp VPS.
+- Chỉ định người có quyền duyệt công việc phát sinh.
 
 ## Tài liệu tham khảo
 
 - [Các phương án triển khai](../deployments/README.md)
 - [Kiến trúc Phương án 1](../deployments/option-1-single-server/architecture.md)
 - [Kiến trúc Phương án 2](../deployments/option-2-two-servers/architecture.md)
+- [Kiến trúc Phương án 3](../deployments/option-3-separate-services/architecture.md)
 - [Công việc và chi phí bảo trì](../maintainances/maintenance-work-and-cost.md)
 - [Ứng phó sự cố](../maintainances/incident-response.md)
-- [Bảng giá VPS Vietnix và bản sao lưu hằng tuần](https://vietnix.vn/vps/)
-- [Hướng dẫn sao lưu VPS Vietnix](https://vietnix.vn/backup-du-lieu-vps/)
-- [Bảng giá Cloudflare](https://www.cloudflare.com/plans/)
 - [Giảm VAT tại Việt Nam đến hết năm 2026](https://baochinhphu.vn/giam-thue-gia-tri-gia-tang-tu-01-7-2025-den-het-31-12-2026-10225070118590677.htm)

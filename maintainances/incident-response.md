@@ -33,13 +33,13 @@ Người phụ trách có thể đổi mức khi đã biết rõ tác động.
 
 ## Thời gian phản hồi
 
-| Mức | Thời gian phản hồi | Cách làm |
+| Mức | Thời gian xác nhận đã nhận | Cách làm |
 |---|---:|---|
-| Mức 1 | Trong 8 giờ làm việc đã thống nhất | Ưu tiên cao nhất khi đã nhận việc |
-| Mức 2 | Trong 1 ngày làm việc | Xử lý trong khung giờ hỗ trợ |
-| Mức 3 | Trong 2 ngày làm việc | Đưa vào kế hoạch |
+| Mức 1 | Trong 30 phút thuộc khung giờ hỗ trợ | Ưu tiên cao nhất khi đã nhận việc |
+| Mức 2 | Trong 30 phút thuộc khung giờ hỗ trợ | Xử lý trong khung giờ hỗ trợ |
+| Mức 3 | Trong 30 phút thuộc khung giờ hỗ trợ | Đưa vào kế hoạch |
 
-Gói bảo trì không có trực 24/7. Ngoài giờ hỗ trợ, người phụ trách chỉ nhận việc khi có thể. Không có cam kết phản hồi trong 15 phút.
+Phản hồi là xác nhận đã nhận và đánh giá ban đầu. Đây không phải thời gian khắc phục xong sự cố. Gói bảo trì không có trực 24/7. Ngoài khung giờ hỗ trợ, người phụ trách chỉ nhận việc khi có thể.
 
 Các mục tiêu phục hồi kỹ thuật dưới đây được tính từ khi bắt đầu xử lý, không phải từ khi sự cố xảy ra:
 
@@ -48,7 +48,7 @@ Các mục tiêu phục hồi kỹ thuật dưới đây được tính từ khi
 - Phương án 2: cố gắng phục hồi VPS Web trong vòng 60 phút.
 - Phương án 2: cố gắng phục hồi VPS cơ sở dữ liệu trong vòng 4 giờ.
 - Có thể mất tối đa 24 giờ dữ liệu cơ sở dữ liệu nếu dùng bản sao hằng ngày.
-- Có thể mất tối đa 7 ngày dữ liệu tệp nếu chỉ dùng bản sao hằng tuần của Vietnix.
+- Có thể mất tối đa 7 ngày dữ liệu tệp nếu chỉ dùng bản sao hằng tuần của nhà cung cấp.
 
 Đây là mục tiêu, không phải lời bảo đảm. Thời gian thật còn phụ thuộc nguyên nhân lỗi, tình trạng bản sao lưu và khả năng truy cập máy chủ.
 
@@ -97,7 +97,7 @@ Việc ngăn lỗi có thể tạm thời làm mất một số chức năng. Ng
 2. Quay lại bản ứng dụng ổn định gần nhất.
 3. Dựng lại VPS từ hướng dẫn đã có.
 4. Khôi phục PostgreSQL từ bản sao hằng ngày trên VPS khác.
-5. Dùng bản sao hằng tuần của Vietnix nếu không còn bản tốt hơn.
+5. Dùng bản sao hằng tuần của nhà cung cấp nếu không còn bản tốt hơn.
 
 Không xóa dữ liệu hoặc nhật ký bị hỏng cho đến khi xác nhận chúng không còn cần để phục hồi hoặc tìm nguyên nhân.
 
@@ -154,15 +154,10 @@ Việc xem lại tập trung vào hệ thống và cách làm, không quy lỗi 
 
 ## Chi phí xử lý sự cố
 
-Phí bảo trì thường kỳ không bao gồm thời gian xử lý sự cố ngoài gói.
+Phí bảo trì thường kỳ không bao gồm việc xử lý sự cố ngoài gói. Chi phí được báo riêng theo nhu cầu, phạm vi, mức độ khẩn cấp và chi phí của bên thứ ba.
 
-> Chi phí sự cố = số giờ xử lý x 300.000 VND + chi phí của nhà cung cấp khác
-
-Đơn giá **300.000 VND/giờ** áp dụng chung cho ban ngày, buổi tối, cuối tuần và ngày lễ.
-
-- Tính theo mỗi 30 phút.
+- Báo giá được gửi trước khi làm.
 - Chỉ bắt đầu việc có tính phí sau khi khách hàng đồng ý, trừ khi hai bên đã thống nhất trước về trường hợp khẩn cấp.
-- Không có phụ phí ngoài giờ.
 - Không cam kết luôn có người nhận việc ngoài giờ.
 
 ## Nội dung hợp đồng cần ghi rõ

@@ -10,7 +10,7 @@
 
 - **Mục tiêu:** Giữ chi phí hợp lý, giảm thời gian website bị dừng và có cách phục hồi khi máy chủ gặp lỗi.
 - **Khuyến nghị:** Dùng Phương án 2. Website và PostgreSQL chạy trên hai VPS riêng.
-- **Chi phí năm đầu:** **47,6 triệu VND**.
+- **Chi phí năm đầu:** **44,85 triệu VND**.
 - **Từ năm thứ hai:** Khoảng **39,6 triệu VND/năm** nếu giá VPS và phí bảo trì không đổi.
 
 ## So sánh nhanh
@@ -26,16 +26,16 @@ flowchart LR
 | Phương án | Chi phí năm đầu | Rủi ro dừng toàn bộ | Công quản lý | Quyết định |
 |---|---:|---|---|---|
 | [Một máy chủ](./option-1-single-server/architecture.md) | 36,7 triệu VND | Cao | Thấp | Chỉ dùng khi cần tiết kiệm nhất |
-| [Hai máy chủ](./option-2-two-servers/architecture.md) | 47,6 triệu VND | Trung bình | Trung bình | **Khuyến nghị** |
+| [Hai máy chủ](./option-2-two-servers/architecture.md) | 44,85 triệu VND | Trung bình | Trung bình | **Khuyến nghị** |
 | [Bốn máy chủ](./option-3-separate-services/architecture.md) | 78 triệu VND | Trung bình | Cao | Chưa cần dùng |
 
-Các số trên gồm VPS, cài đặt ban đầu, bảo trì một năm và VAT theo kế hoạch. Không gồm việc phát sinh, trực 24/7, Cloudflare Pro hoặc nơi sao lưu bên ngoài Vietnix.
+Các số trên gồm VPS, cài đặt ban đầu, bảo trì một năm và VAT theo kế hoạch. Không gồm việc phát sinh, trực 24/7 hoặc nơi sao lưu bên ngoài nhà cung cấp VPS.
 
 ## Vì sao chọn Phương án 2
 
 - Lưu lượng hiện tại còn thấp. Chưa cần chia hệ thống thành quá nhiều phần.
 - PostgreSQL chạy riêng. Lỗi website khó dùng hết tài nguyên của cơ sở dữ liệu.
-- Chi phí năm đầu chỉ cao hơn Phương án 1 là 10,9 triệu VND.
+- Chi phí năm đầu chỉ cao hơn Phương án 1 là 8,15 triệu VND.
 - Khi có lỗi, việc tìm nguyên nhân và phục hồi vẫn đơn giản.
 - Có thể thêm VPS Web thứ hai sau này mà không phải làm lại toàn bộ.
 
@@ -46,28 +46,26 @@ Tách nhiều dịch vụ không tự làm hệ thống ổn định hơn. Nếu
 | Hạng mục | Chi phí năm đầu |
 |---|---:|
 | Hai VPS, đã gồm VAT | 6,6 triệu VND |
-| Cài đặt ban đầu | 8 triệu VND |
+| Cài đặt ban đầu | 5,25 triệu VND |
 | Bảo trì một năm, đã gồm VAT | 33 triệu VND |
-| **Tổng** | **47,6 triệu VND** |
+| **Tổng** | **44,85 triệu VND** |
 
-Phí bảo trì là 2,5 triệu VND/tháng trước VAT. Công việc ngoài gói có giá 300.000 VND/giờ cho mọi khung giờ.
+Phí bảo trì là 2,5 triệu VND/tháng trước VAT. Công việc ngoài gói được báo giá theo nhu cầu và phải được khách hàng duyệt trước.
 
 ## Việc bắt buộc cho mọi phương án
 
-- Đặt **Cloudflare Free** trước website.
-- Bật chống DDoS, tường lửa web và giới hạn số lần gọi khi gói Free hỗ trợ.
-- Ẩn IP gốc của Vietnix khi có thể.
-- Chỉ cho phép Cloudflare truy cập các cổng web.
-- Bảo vệ trang quản trị bằng Cloudflare Access hoặc danh sách IP được phép.
+- Chỉ mở cổng 80 và 443 cho truy cập công khai.
+- Chỉ cho phép IP tin cậy hoặc VPN dùng SSH.
+- Bảo vệ trang quản trị bằng danh sách IP được phép hoặc VPN.
 - Bật xác thực hai bước cho tài khoản quản trị.
 - Không mở PostgreSQL hoặc Redis ra Internet.
 - Sao lưu PostgreSQL hằng ngày.
 - Với phương án nhiều máy chủ, chép bản sao lưu sang VPS khác.
-- Dùng thêm bản sao lưu hằng tuần có sẵn của Vietnix.
+- Dùng thêm bản sao lưu hằng tuần có sẵn của nhà cung cấp.
 - Thử khôi phục dữ liệu mỗi tháng.
 - Theo dõi website, CPU, bộ nhớ, ổ đĩa và trạng thái sao lưu.
 
-Cloudflare Free đủ cho giai đoạn đầu. Cloudflare Pro chỉ là lựa chọn thêm và được tính riêng trong [tài liệu chi phí](../costs/README.md).
+Website nhận truy cập trực tiếp qua VPS Web. IP công khai của VPS sẽ được nhìn thấy trên Internet.
 
 ## Khi nào cần nâng cấp máy chủ
 
@@ -94,19 +92,13 @@ Chỉ nâng cấp khi có một trong các dấu hiệu sau:
 | Tệp tải lên có thể mất | Tối đa 7 ngày |
 | Quay lại bản phát hành cũ | Trong vòng 15 phút |
 
-Gói bảo trì chỉ cam kết phản hồi trong 8 giờ làm việc đã thống nhất. Các mốc phục hồi trên được tính từ khi bắt đầu xử lý và không phải lời bảo đảm.
+Gói bảo trì cam kết phản hồi trong 30 phút thuộc khung giờ hỗ trợ đã thống nhất. Các mốc phục hồi trên được tính từ khi bắt đầu xử lý và không phải lời bảo đảm.
 
 ## Điều chưa rõ cần xác nhận
 
 - **Lượng truy cập:** Chưa biết lúc đông nhất có bao nhiêu người dùng cùng lúc. Cần kiểm thử tải trước khi mở cho khách hàng.
 - **Dữ liệu:** Chưa biết kích thước cơ sở dữ liệu và tệp hiện tại. Cần kiểm tra trước khi mua VPS.
-- **Mạng:** Cần hỏi Vietnix về mạng riêng giữa hai VPS. Nếu không có, phải giới hạn IP và mã hóa kết nối cơ sở dữ liệu.
+- **Mạng:** Cần hỏi nhà cung cấp về mạng riêng giữa hai VPS. Nếu không có, phải giới hạn IP và mã hóa kết nối cơ sở dữ liệu.
 - **Tệp:** Tệp tải lên được lưu trên VPS Web và nằm trong bản sao lưu hằng tuần.
-- **Sao lưu:** Chưa có bản sao bên ngoài Vietnix. Chủ doanh nghiệp phải chấp nhận rủi ro này hoặc mua thêm nơi lưu.
+- **Sao lưu:** Chưa có bản sao bên ngoài nhà cung cấp VPS. Chủ doanh nghiệp phải chấp nhận rủi ro này hoặc mua thêm nơi lưu.
 - **Hỗ trợ:** Cần ghi rõ khung giờ hỗ trợ trong hợp đồng.
-
-## Nguồn giá
-
-- [Bảng giá VPS Vietnix](https://vietnix.vn/vps/)
-- [Gói dịch vụ và bảng giá Cloudflare](https://www.cloudflare.com/plans/)
-- [Hướng dẫn chống DDoS của Cloudflare](https://developers.cloudflare.com/ddos-protection/get-started/)

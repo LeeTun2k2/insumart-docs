@@ -6,7 +6,7 @@
 
 ## Tóm tắt
 
-- **Cách làm:** Chạy toàn bộ website trên một VPS Vietnix.
+- **Cách làm:** Chạy toàn bộ website trên một VPS.
 - **Lợi ích:** Rẻ nhất và dễ quản lý nhất.
 - **Rủi ro:** VPS hỏng thì website và cơ sở dữ liệu cùng dừng.
 - **Chi phí năm đầu:** **36,7 triệu VND**.
@@ -15,22 +15,21 @@
 
 ```mermaid
 flowchart LR
-    NguoiDung[Khách hàng hoặc quản trị viên] --> CF[Cloudflare]
-    CF --> VPS[Một VPS Vietnix]
+    NguoiDung[Khách hàng hoặc quản trị viên] --> VPS[Một VPS]
     VPS --> Web[Website và ứng dụng]
     VPS --> DB[(PostgreSQL và tệp)]
     VPS -. nếu cần .-> Redis[(Redis)]
-    VPS -. hằng tuần .-> SaoLuu[Bản sao lưu Vietnix]
+    VPS -. hằng tuần .-> SaoLuu[Bản sao lưu nhà cung cấp]
 ```
 
 Website, trang quản trị, ứng dụng chính và PostgreSQL chạy riêng bên trong cùng một VPS. Cách này giúp phần mềm ít ảnh hưởng lẫn nhau, nhưng không giúp ích khi cả VPS bị lỗi.
 
 ## Cấu hình đề xuất
 
-- **Vietnix VPS Cheap 2:** 2 CPU, 4 GB RAM và 40 GB SSD.
+- **Cấu hình VPS:** 2 CPU, 4 GB RAM và 40 GB SSD.
 - Chưa dùng Redis ở giai đoạn đầu.
 - Lưu tệp tải lên trên ổ đĩa của VPS.
-- Dùng bản sao lưu hằng tuần của Vietnix.
+- Dùng bản sao lưu hằng tuần của nhà cung cấp.
 - Tạo sẵn trang khách hàng và trang quản trị trước khi đưa lên VPS.
 
 ## Chi phí
@@ -42,7 +41,7 @@ Website, trang quản trị, ứng dụng chính và PostgreSQL chạy riêng b�
 | Cài đặt ban đầu | 7 triệu VND |
 | **Tổng năm đầu, theo VAT kế hoạch** | **36,7 triệu VND** |
 
-Công việc ngoài gói có giá 300.000 VND/giờ cho mọi khung giờ.
+Công việc ngoài gói được báo giá theo nhu cầu và phải được khách hàng duyệt trước.
 
 ## Khi có lỗi
 
@@ -63,7 +62,7 @@ Công việc ngoài gói có giá 300.000 VND/giờ cho mọi khung giờ.
 - Cố gắng phục hồi toàn bộ trong vòng 4 giờ sau khi bắt đầu xử lý.
 - Thử phục hồi mỗi tháng.
 
-Gói bảo trì chỉ cam kết phản hồi trong 8 giờ làm việc đã thống nhất. Mục tiêu 4 giờ được tính từ khi bắt đầu xử lý.
+Gói bảo trì cam kết phản hồi trong 30 phút thuộc khung giờ hỗ trợ đã thống nhất. Mục tiêu 4 giờ được tính từ khi bắt đầu xử lý.
 
 ## Khi nào cần đổi phương án
 
@@ -76,4 +75,4 @@ Chuyển sang Phương án 2 khi website và cơ sở dữ liệu tranh nhau tà
 
 ## Quyết định
 
-Chỉ chọn phương án này khi tiết kiệm chi phí quan trọng hơn việc tách riêng website và cơ sở dữ liệu. Phương án tiết kiệm 10,9 triệu VND trong năm đầu so với Phương án 2.
+Chỉ chọn phương án này khi tiết kiệm chi phí quan trọng hơn việc tách riêng website và cơ sở dữ liệu. Phương án tiết kiệm 8,15 triệu VND trong năm đầu so với Phương án 2.
